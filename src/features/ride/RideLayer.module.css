@@ -1,0 +1,387 @@
+/* State is set by the engine through data attributes: data-live, data-hit, data-cur, data-show, data-party, data-clear. */
+.root {
+  display: contents;
+}
+
+.fx {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 29;
+}
+.skater {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 30;
+}
+
+/* ---------- checkpoint banner ---------- */
+.banner {
+  position: fixed;
+  z-index: 45;
+  /* same spot for every checkpoint; the checkpoint lead keeps headings below it */
+  top: var(--banner-top);
+  left: 50%;
+  pointer-events: none;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  background: var(--ink);
+  color: var(--acid);
+  padding: 10px 22px 12px;
+  box-shadow: 6px 6px 0 var(--pink);
+  opacity: 0;
+  transform: translate(-50%, -24px) rotate(-3deg) scale(0.9);
+  transition:
+    transform 0.4s cubic-bezier(0.2, 1.6, 0.4, 1),
+    opacity 0.2s;
+}
+.banner[data-show] {
+  opacity: 1;
+  transform: translate(-50%, 0) rotate(-3deg);
+}
+.banner small {
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.22em;
+  color: var(--paper);
+}
+.banner b {
+  font: 400 clamp(26px, 4vw, 40px)/1 var(--font-display);
+}
+.banner[data-clear] b {
+  background: linear-gradient(90deg, var(--pink), var(--acid), var(--white), var(--cyan), var(--acid), var(--pink)) 0
+    0 / 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine 0.9s linear infinite;
+}
+@keyframes shine {
+  to {
+    background-position: 200% 0;
+  }
+}
+.trophy {
+  display: none;
+  position: absolute;
+  top: -0.9em;
+  left: 50%;
+  font-size: 54px;
+  line-height: 1;
+  filter: drop-shadow(3px 3px 0 var(--ink));
+  transform-origin: 50% 100%;
+}
+.banner[data-clear] .trophy {
+  display: block;
+  animation:
+    trophy 0.9s var(--spring) both,
+    bob 0.6s ease-in-out 0.9s infinite alternate;
+}
+.banner[data-clear] {
+  padding-top: 34px;
+}
+@keyframes trophy {
+  from {
+    transform: translate(-50%, 40px) scale(0.2) rotate(-30deg);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0) scale(1) rotate(-6deg);
+    opacity: 1;
+  }
+}
+@keyframes bob {
+  from {
+    transform: translate(-50%, 0) rotate(-6deg);
+  }
+  to {
+    transform: translate(-50%, -6px) rotate(6deg);
+  }
+}
+
+/* ---------- rail ---------- */
+.rail {
+  position: fixed;
+  top: 10vh;
+  bottom: 14vh;
+  right: 0;
+  width: 190px;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+}
+.track {
+  position: absolute;
+  top: -10px;
+  bottom: -10px;
+  right: calc(var(--rail-right) - 20px);
+  width: 40px;
+  cursor: pointer;
+  touch-action: none;
+}
+.rail[data-live] .track {
+  pointer-events: auto;
+}
+.track::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 18px;
+  width: 4px;
+  background: var(--ink);
+  border-radius: 2px;
+  transition:
+    width 0.15s,
+    left 0.15s;
+}
+.track:hover::before,
+:global(html[data-grabbing]) .track::before {
+  width: 6px;
+  left: 17px;
+}
+.fill {
+  position: absolute;
+  top: 0;
+  right: calc(var(--rail-right) - 2px);
+  width: 4px;
+  background: var(--pink);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.cps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cps li {
+  position: absolute;
+  right: calc(var(--rail-right) - 9px);
+  transform: translateY(-50%);
+}
+.cps button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-direction: row-reverse;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.rail[data-live] .cps button {
+  pointer-events: auto;
+}
+.dot {
+  width: 18px;
+  height: 18px;
+  border: 3px solid var(--ink);
+  background: var(--paper);
+  border-radius: 50%;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+  flex: 0 0 auto;
+}
+.lbl {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  padding: 4px 6px;
+  opacity: 0;
+  transform: translateX(6px);
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+  white-space: nowrap;
+}
+.cps li[data-hit] .dot {
+  background: var(--pink);
+}
+.cps li[data-cur] .dot {
+  transform: scale(1.25);
+  background: var(--acid);
+}
+.cps li[data-cur] .lbl,
+.cps button:hover .lbl,
+.cps button:focus-visible .lbl {
+  opacity: 1;
+  transform: none;
+}
+:global(html[data-grabbing]) .cps li[data-cur] .lbl {
+  opacity: 0;
+}
+
+/* finish flag replaces the last dot */
+.cps li.fin {
+  right: calc(var(--rail-right) - 14px);
+}
+.fin .dot,
+.cps li.fin[data-hit] .dot,
+.cps li.fin[data-cur] .dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 3px;
+  border-width: 2px;
+  background: conic-gradient(var(--ink) 25%, var(--white) 0 50%, var(--ink) 0 75%, var(--white) 0) 0 0 / 12px 12px;
+}
+.cps li.fin[data-cur] .dot {
+  transform: scale(1.15) rotate(-6deg);
+  box-shadow: 3px 3px 0 var(--pink);
+}
+.cps li.fin[data-party] .dot {
+  animation: wave 0.28s ease-in-out 8 alternate;
+}
+@keyframes wave {
+  from {
+    transform: scale(1.2) rotate(-14deg);
+  }
+  to {
+    transform: scale(1.35) rotate(12deg);
+  }
+}
+
+.readout {
+  position: absolute;
+  bottom: -44px;
+  right: calc(var(--rail-right) - 30px);
+  width: 60px;
+  text-align: center;
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+.toTop {
+  position: absolute;
+  bottom: -84px;
+  right: calc(var(--rail-right) - 52px);
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: var(--ink);
+  color: var(--acid);
+  border: 2px solid var(--ink);
+  padding: 8px 10px;
+  box-shadow: 3px 3px 0 var(--pink);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition:
+    opacity 0.25s,
+    transform 0.25s,
+    box-shadow 0.12s;
+}
+.toTop[data-show] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.toTop:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--pink);
+}
+.fallback {
+  display: none;
+  position: absolute;
+  right: calc(var(--rail-right) - 14px);
+  width: 28px;
+  height: 40px;
+  background: var(--pink);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  transform: translateY(-50%);
+}
+:global(html[data-no-gl]) .fallback {
+  display: block;
+}
+
+/* ---------- grab handle over the rider ---------- */
+.thumb {
+  position: fixed;
+  z-index: 40;
+  left: 0;
+  top: 0;
+  height: 56px;
+  border-radius: 30px;
+  cursor: grab;
+  touch-action: none;
+  display: none;
+}
+.thumb[data-live] {
+  display: block;
+}
+.thumb::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px dashed var(--ink);
+  opacity: 0;
+  transform: scale(0.9);
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+}
+.thumb:hover::before,
+.thumb:focus-visible::before,
+:global(html[data-grabbing]) .thumb::before {
+  opacity: 0.55;
+  transform: none;
+}
+.thumb:focus-visible {
+  outline: none;
+}
+.bubble {
+  position: fixed;
+  z-index: 41;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  background: var(--ink);
+  color: var(--acid);
+  padding: 7px 9px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.bubble[data-show] {
+  opacity: 1;
+}
+.hint {
+  position: fixed;
+  z-index: 41;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  font: 400 17px/1.05 var(--font-marker);
+  color: var(--pink);
+  text-align: right;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.hint[data-show] {
+  opacity: 1;
+}
+
+@media (max-width: 700px) {
+  .lbl,
+  .readout {
+    display: none;
+  }
+}

@@ -1,0 +1,35 @@
+.section {
+  padding-block: 96px 40px;
+}
+.head {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+.title {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+}
+.title h2 {
+  font: 400 clamp(30px, 8.4vw, 118px)/0.9 var(--font-display);
+}
+.section[data-size="xl"] .title h2 {
+  font-size: clamp(44px, 13vw, 180px);
+}
+.alias {
+  font: 400 clamp(18px, 2.3vw, 28px)/1 var(--font-marker);
+  background: var(--pink);
+  border: 3px solid var(--ink);
+  padding: 8px 14px 6px;
+  box-shadow: var(--shadow);
+  transform: rotate(-6deg) translateY(-0.5em);
+  white-space: nowrap;
+}
+.head p {
+  margin-top: 4px;
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: 17px;
+}

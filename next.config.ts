@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Fully static site: `npm run build` writes /out, deployable to any static host or Vercel.
+  output: "export",
+  trailingSlash: true,
+  images: { unoptimized: true },
   reactCompiler: true,
 };
 

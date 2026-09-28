@@ -1,0 +1,89 @@
+.finish {
+  margin-top: 70px;
+}
+.checker {
+  height: 56px;
+  border-block: 3px solid var(--ink);
+  background: conic-gradient(var(--ink) 25%, var(--paper) 0 50%, var(--ink) 0 75%, var(--paper) 0) 0 0 / 50px 50px;
+}
+.finish .section {
+  padding-block: 56px 90px;
+}
+.body {
+  display: grid;
+  gap: 24px;
+}
+.pitch {
+  font-size: 20px;
+  max-width: 42ch;
+}
+
+.mail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.address {
+  font: 600 17px/1 var(--font-mono);
+  border: 3px solid var(--ink);
+  padding: 14px 16px;
+  background: var(--white);
+  text-decoration: none;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.stickers {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 20px;
+  align-items: center;
+}
+.sticker {
+  text-decoration: none;
+  font: 400 21px/1 var(--font-display);
+  border: 3px solid var(--ink);
+  padding: 20px 24px;
+  box-shadow: 5px 5px 0 var(--ink);
+  transition: transform 0.2s var(--spring);
+  display: grid;
+  gap: 6px;
+}
+.sticker small {
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.04em;
+}
+.sticker[data-shape="tag"] {
+  background: var(--acid);
+  transform: rotate(-5deg);
+  border-radius: 18px;
+}
+.sticker[data-shape="round"] {
+  background: var(--blue);
+  color: var(--white);
+  transform: rotate(3deg);
+  border-radius: 50%;
+  width: 140px;
+  height: 140px;
+  place-content: center;
+  text-align: center;
+  padding: 0;
+}
+.sticker[data-shape="block"] {
+  background: var(--pink);
+  transform: rotate(-2deg);
+  border-radius: 4px;
+}
+.sticker:hover {
+  transform: rotate(0deg) scale(1.06);
+}
+
+.foot {
+  font: 600 11px/1.5 var(--font-mono);
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}

@@ -1,0 +1,8 @@
+.next
+out
+node_modules
+package-lock.json
+next-env.d.ts
+public
+# managed by `next dev`
+AGENTS.md

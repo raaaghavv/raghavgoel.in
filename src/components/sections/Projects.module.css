@@ -1,0 +1,260 @@
+.decks {
+  list-style: none;
+  margin: 0;
+  display: flex;
+  gap: 26px;
+  overflow-x: auto;
+  padding: 14px 4px 30px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+.decks > li {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
+.deck {
+  width: 184px;
+  height: 560px;
+  perspective: 1400px;
+}
+.flip {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+.inner {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+/* hover tilt; DeckRow plays the same pose on entry via data-nudge */
+.flip:hover .inner,
+.deck[data-nudge] .inner {
+  transform: rotate(-3deg) translateY(-8px);
+}
+.deck[data-flipped] .inner {
+  transform: rotateY(180deg);
+}
+.face {
+  display: block;
+  position: absolute;
+  inset: 0;
+  border-radius: 92px / 80px;
+  border: 3px solid var(--ink);
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 6px 6px 0 var(--ink);
+}
+
+/* ---------- front graphics ---------- */
+.front {
+  display: grid;
+  place-items: center;
+}
+.front::before {
+  content: "";
+  position: absolute;
+}
+.name {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  position: relative;
+  z-index: 2;
+  white-space: nowrap;
+}
+.spec {
+  position: absolute;
+  bottom: 118px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font: 600 10px/1.35 var(--font-mono);
+  letter-spacing: 0.08em;
+  z-index: 2;
+  padding: 0 22px;
+}
+.live {
+  position: absolute;
+  top: 128px;
+  right: 18px;
+  z-index: 3;
+  font: 400 12px/1 var(--font-display);
+  background: var(--acid);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  padding: 4px 6px;
+  transform: rotate(10deg);
+}
+.bolts {
+  position: absolute;
+  left: 50%;
+  width: 30px;
+  height: 40px;
+  transform: translateX(-50%);
+  z-index: 3;
+  background: radial-gradient(circle, var(--bolt, var(--ink)) 3px, transparent 3.6px) 0 0 / 15px 20px;
+}
+.top {
+  top: 70px;
+}
+.bottom {
+  bottom: 70px;
+}
+
+.front[data-graphic="dot"] {
+  background: var(--pink);
+}
+.front[data-graphic="dot"]::before {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: var(--acid);
+  border: 3px solid var(--ink);
+  top: 46%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.front[data-graphic="stripes"] {
+  background: var(--blue);
+  color: var(--acid);
+}
+.front[data-graphic="stripes"]::before {
+  inset: 0;
+  background: repeating-linear-gradient(-35deg, transparent 0 22px, rgb(255 255 255 / 0.9) 22px 34px);
+  clip-path: polygon(0 55%, 100% 35%, 100% 100%, 0 100%);
+}
+.front[data-graphic="stripes"] .spec {
+  color: var(--white);
+}
+
+.front[data-graphic="checker"] {
+  background: var(--acid);
+}
+.front[data-graphic="checker"]::before {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40%;
+  background: conic-gradient(var(--ink) 25%, transparent 0 50%, var(--ink) 0 75%, transparent 0) 0 0 / 36px 36px;
+}
+.front[data-graphic="checker"] .name {
+  text-shadow: 4px 4px 0 var(--pink);
+}
+.front[data-graphic="checker"] .spec {
+  background: var(--acid);
+  padding-block: 4px;
+}
+
+.front[data-graphic="star"] {
+  background: var(--ink);
+  color: var(--paper);
+  --bolt: var(--paper);
+}
+.front[data-graphic="star"]::before {
+  width: 170px;
+  height: 170px;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(8deg);
+  background: var(--pink);
+  clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+.front[data-graphic="star"] .name {
+  color: var(--acid);
+}
+
+.front[data-graphic="halftone"] {
+  background: var(--white);
+}
+.front[data-graphic="halftone"]::before {
+  width: 230px;
+  height: 230px;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(var(--ink) 2.2px, transparent 2.6px) 0 0 / 9px 9px;
+  -webkit-mask-image: radial-gradient(circle, #000 20%, transparent 70%);
+  mask-image: radial-gradient(circle, #000 20%, transparent 70%);
+}
+.front[data-graphic="halftone"] .name {
+  color: var(--pink);
+  -webkit-text-stroke: 2px var(--ink);
+}
+
+.front[data-graphic="split"] {
+  background: linear-gradient(160deg, var(--pink) 0 50%, var(--blue) 50% 100%);
+  color: var(--white);
+}
+.front[data-graphic="split"] .name {
+  text-shadow: 4px 4px 0 var(--ink);
+}
+
+/* ---------- grip-tape back ---------- */
+.back {
+  transform: rotateY(180deg);
+  color: #f2f2ee;
+  padding: 66px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  background:
+    radial-gradient(rgb(255 255 255 / 0.09) 0.7px, transparent 1px) 0 0 / 3px 3px,
+    var(--grip);
+}
+.backTitle {
+  display: block;
+  font: 400 19px/1 var(--font-display);
+  color: var(--acid);
+}
+.k {
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  color: var(--pink);
+  text-transform: uppercase;
+}
+.back > span {
+  display: block;
+}
+.k {
+  display: block;
+}
+.txt {
+  display: block;
+  margin-top: 3px;
+  font: 400 12px/1.42 var(--font-body);
+}
+.num {
+  display: block;
+  font: 400 28px/1 var(--font-display);
+  color: var(--acid);
+  font-variant-numeric: tabular-nums;
+  margin-top: 3px;
+}
+.back > .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: auto;
+}
+.chips span {
+  font: 600 10px/1 var(--font-mono);
+  border: 1px solid #f2f2ee;
+  padding: 4px 6px;
+  border-radius: 99px;
+}

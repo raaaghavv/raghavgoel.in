@@ -1,0 +1,161 @@
+.cards {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
+  gap: 26px 20px;
+}
+/* perspective must sit on the card's direct parent */
+.cards > li {
+  perspective: 1000px;
+}
+
+.card {
+  /* 63:90 overall ≈ the prototype's rendered card (63:88 content + padding and border) */
+  position: relative;
+  aspect-ratio: 63 / 90;
+  max-width: 100%;
+  border-radius: 14px;
+  background: var(--card-frame);
+  border: 3px solid var(--ink);
+  padding: 9px;
+  box-shadow: 5px 5px 0 var(--ink);
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.25s ease-out;
+  transform-style: preserve-3d;
+}
+.in {
+  height: 100%;
+  border-radius: 7px;
+  border: 2px solid var(--ink);
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: 7px;
+  padding: 8px;
+  overflow: hidden;
+}
+.card[data-type="ai"] .in {
+  background: var(--card-ai);
+}
+.card[data-type="ops"] .in {
+  background: var(--card-ops);
+}
+.card[data-type="be"] .in {
+  background: var(--card-be);
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+}
+.top h3 {
+  font: 800 13px/1.15 var(--font-body);
+  font-stretch: 90%;
+}
+.top span {
+  font: 600 10px/1 var(--font-mono);
+  white-space: nowrap;
+}
+.card[data-rare] .top span::before {
+  content: "★ ";
+}
+
+.art {
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  display: grid;
+  place-items: center;
+  font: 400 38px/1 var(--font-display);
+  min-height: 84px;
+  position: relative;
+  overflow: hidden;
+}
+.card[data-type="ai"] .art {
+  background: repeating-radial-gradient(circle at 30% 70%, var(--pink) 0 8px, #ff7cc3 8px 16px);
+  color: var(--acid);
+  text-shadow: 3px 3px 0 var(--ink);
+}
+.card[data-type="ops"] .art {
+  background:
+    linear-gradient(var(--blue) 2px, transparent 2px) 0 0 / 14px 14px,
+    linear-gradient(90deg, var(--blue) 2px, transparent 2px) 0 0 / 14px 14px,
+    var(--white);
+  color: var(--ink);
+  text-shadow: 3px 3px 0 var(--acid);
+}
+.card[data-type="be"] .art {
+  background: repeating-linear-gradient(45deg, var(--acid) 0 10px, var(--white) 10px 20px);
+  color: var(--pink);
+  -webkit-text-stroke: 1.5px var(--ink);
+}
+
+.move {
+  font: 400 11.5px/1.35 var(--font-body);
+}
+.move b {
+  display: block;
+  font-weight: 800;
+  font-size: 12px;
+}
+.foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 6px;
+  font: 600 9px/1 var(--font-mono);
+  letter-spacing: 0.04em;
+  border-top: 1px solid var(--ink);
+  padding-top: 6px;
+}
+/* issuer and date on their own lines */
+.meta {
+  display: grid;
+  gap: 3px;
+  line-height: 1.2; /* long issuers wrap without cramping */
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s;
+  mix-blend-mode: color-dodge;
+  background: linear-gradient(
+      115deg,
+      transparent 25%,
+      rgb(255 62 165 / 0.55) 38%,
+      rgb(230 255 0 / 0.55) 48%,
+      rgb(43 80 255 / 0.5) 58%,
+      transparent 72%
+    )
+    var(--mx, 50%) 50% / 250% 250%;
+}
+.card:hover::after {
+  opacity: 1;
+}
+/* entry wave (CardBinder): one foil sweep across the card */
+.card[data-shine]::after {
+  animation: sweep var(--shine-ms, 1s) ease-in-out both;
+}
+@keyframes sweep {
+  0% {
+    opacity: 0;
+    background-position: 0% 50%;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    background-position: 100% 50%;
+  }
+}

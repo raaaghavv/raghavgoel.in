@@ -1,0 +1,172 @@
+.log {
+  display: block;
+  width: 100%;
+  border-collapse: collapse;
+  border: 3px solid var(--ink);
+  background: #f7f6f1;
+  box-shadow: 8px 8px 0 var(--ink);
+}
+.log thead,
+.log tbody {
+  display: block;
+}
+.row,
+.head {
+  display: grid;
+  grid-template-columns: 150px 260px 1fr;
+  gap: 20px;
+  padding: 22px 24px;
+  border-top: 2px dashed var(--ink);
+  text-align: left;
+}
+.head {
+  border-top: 0;
+  background: var(--ink);
+  color: var(--paper);
+  padding-block: 12px;
+}
+.head th {
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.log td,
+.log th {
+  padding: 0;
+  vertical-align: top;
+}
+.when {
+  font: 600 13px/1.4 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.now {
+  display: inline-block;
+  background: var(--pink);
+  padding: 2px 6px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.where b {
+  display: block;
+  font: 800 17px/1.25 var(--font-body);
+  font-stretch: 110%;
+}
+.where > span {
+  display: block;
+  font-size: 14px;
+  color: var(--muted);
+}
+.where > .lvl {
+  display: inline-block;
+  max-width: 100%;
+  margin-top: 10px;
+  font: 600 10px/1.3 var(--font-mono);
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  background: var(--acid);
+  border: 2px solid var(--ink);
+  padding: 5px 7px;
+}
+.what ul {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 7px;
+  max-width: 64ch;
+}
+
+@media (max-width: 860px) {
+  .row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .head {
+    display: none;
+  }
+}
+
+/* ---------- stamp (Stamp.tsx) ---------- */
+.what {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.stamp {
+  position: relative;
+  flex: none;
+  width: 132px;
+  height: 132px;
+  transform: rotate(-12deg);
+  opacity: 0.9;
+  mix-blend-mode: multiply;
+}
+.stamp svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.stamp[data-armed]:not([data-stamped]) {
+  opacity: 0;
+}
+/* incoming stamp: drops in from above (shadow shrinking as it nears), squashes on impact, ink crisps up */
+.stamp[data-stamped] {
+  animation: stamp-in var(--stamp-ms, 650ms) both;
+}
+@keyframes stamp-in {
+  0% {
+    opacity: 0;
+    transform: translate(-14px, -40px) rotate(-26deg) scale(1.6);
+    filter: drop-shadow(20px 28px 6px rgb(0 0 0 / 0.18));
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+  48% {
+    opacity: 0.35;
+    transform: translate(-4px, -12px) rotate(-16deg) scale(1.2);
+    filter: drop-shadow(8px 12px 4px rgb(0 0 0 / 0.14));
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+  60% {
+    opacity: 1;
+    transform: rotate(-12deg) scale(0.92);
+    filter: drop-shadow(0 0 0 transparent) blur(0.7px);
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+  74% {
+    transform: rotate(-12deg) scale(1.03);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0.9;
+    transform: rotate(-12deg) scale(1);
+    filter: none;
+  }
+}
+/* impact ripple ring; animated from Stamp.tsx at the moment of impact */
+.stamp::after {
+  content: "";
+  position: absolute;
+  inset: 4%;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .stamp[data-armed]:not([data-stamped]) {
+    opacity: 0.9;
+  }
+}
+@media (max-width: 1100px) {
+  .what {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .stamp {
+    align-self: flex-end;
+    width: 108px;
+    height: 108px;
+  }
+}

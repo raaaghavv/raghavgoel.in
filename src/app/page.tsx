@@ -4,7 +4,7 @@ import Stack from "@/components/sections/Stack";
 import Experience from "@/components/sections/Experience";
 import Certificates from "@/components/sections/Certificates";
 import Finish from "@/components/sections/Finish";
-import Ride from "@/features/ride/Ride";
+import RideLayer from "@/features/ride/RideLayer";
 
 /** Everything here is server-rendered from src/config; the ride layer hydrates on top. */
 export default function Home() {
@@ -18,7 +18,7 @@ export default function Home() {
         <Certificates />
         <Finish />
       </main>
-      <Ride />
+      <RideLayer />
     </>
   );
 }

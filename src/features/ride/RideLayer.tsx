@@ -24,7 +24,11 @@ const PARTS: Part[] = [
   "fallback",
 ];
 
-/** Decorative overlay: the skater, effects canvas and the progress-bar scrollbar. */
+/**
+ * Decorative overlay: the skater, effects canvas and the progress-bar scrollbar. It server-renders (all of it
+ * starts hidden) and imports the engine statically, so the engine chunk (three.js) is referenced from the HTML
+ * and downloads in parallel with React instead of after hydration. The engine only touches the DOM in the effect.
+ */
 export default function RideLayer() {
   const rootRef = useRef<HTMLDivElement>(null);
 

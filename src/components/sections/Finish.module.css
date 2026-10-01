@@ -499,9 +499,13 @@
 }
 
 @media (max-width: 860px) {
-  /* phones: room under the board so the rider on the bottom rail never covers the send button */
+  /* phones: enough ground under the board that it ends above the rail's ↑ button and the rider at the finish */
   .rig {
-    --foot: 110px;
+    --foot: 160px;
+  }
+  /* and room under the form so the "let's build" sticker hangs below the send button, not over it */
+  .board {
+    padding-bottom: 46px;
   }
   .board {
     grid-template-columns: 1fr;

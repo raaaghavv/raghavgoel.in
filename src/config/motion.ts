@@ -43,10 +43,12 @@ export const motion = {
     /** px per scale unit in the hero: clamp(width * vw, min, max) */
     hero: { vw: 0.062, min: 42, max: 86 },
     heroMobile: { vw: 0.09, min: 30, max: 40 },
-    rail: { desktop: 17, mobile: 12 },
+    rail: { desktop: 17, mobile: 14 },
     height: 3.75,
     heroYaw: -0.45,
     railYaw: -0.5,
+    /** phones: facing while grinding along the bottom rail (3/4 view, like the hero) */
+    grindYaw: -0.55,
     springs: { push: 260, glide: 120, stance: 170, stunt: 200 },
     look: { yaw: 0.6, pitch: 0.45, railRadius: 260, depth: 520 },
     nodPeriod: 280,

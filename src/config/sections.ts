@@ -46,7 +46,7 @@ export const labels = {
   checkpoint: "Checkpoint",
   finishBanner: "Course clear!",
   finishTrophy: "🏆",
-  backToStart: "↑ Back to start",
+  backToStart: { icon: "↑", text: "Back to start" },
   railHint: ["grab me", "& ride ↓"],
   runReadout: "Run",
   experienceColumns: ["When", "Where", "What landed"],

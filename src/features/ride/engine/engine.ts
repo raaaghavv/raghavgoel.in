@@ -250,7 +250,7 @@ export function startRide(els: RideElements): () => void {
     const live = railOn > 0.9;
     flag(els.rail, "live", live);
     flag(els.thumb, "live", live);
-    els.fill.style.height = pr * geo.height + "px";
+    els.fill.style.setProperty("--fill", pr * geo.length + "px");
     const pct = Math.round(p * 100);
     els.pct.textContent = String(pct);
     els.thumb.setAttribute("aria-valuenow", String(pct));
@@ -261,24 +261,37 @@ export function startRide(els: RideElements): () => void {
     });
     const scrollingUp = faceDir < 0 && p > motion.rail.backToStartOnUpFrom;
     flag(els.toTop, "show", ts >= 0.99 && !stunt.state.locked && (p > motion.rail.backToStartFrom || scrollingUp));
-    const railY = geo.top + pr * geo.height;
-    const lineX = w - geo.railRight;
-    els.fallback.style.top = pr * geo.height + "px";
+    // the rider's spot on the rail. Desktop: wall ride down the right side, body sideways to the left of the line.
+    // Phones (flat): grinding along the bottom, standing upright on the line.
+    const flat = geo.flat;
+    const { x: railX, y: railY } = rail.at(pr);
+    els.fallback.style.setProperty("--at", pr * geo.length + "px");
 
     const Sr = small ? S.rail.mobile : S.rail.desktop;
     const riderLen = S.height * Sr;
-    els.thumb.style.transform = `translate(${lineX - 14}px, ${railY - 28}px)`;
-    els.thumb.style.width = riderLen + 26 + "px";
+    const T = els.thumb.style;
+    if (flat) {
+      T.transform = `translate(${railX - 22}px, ${railY - riderLen - 10}px)`;
+      T.width = "44px";
+      T.height = riderLen + 18 + "px";
+    } else {
+      T.transform = `translate(${railX - 14}px, ${railY - 28}px)`;
+      T.width = riderLen + 26 + "px";
+      T.height = "";
+    }
     const drag = rail.state.drag;
     const showBubble = !!drag || els.thumb.matches(":hover") || document.activeElement === els.thumb;
     flag(els.bubble, "show", live && showBubble);
     if (showBubble) {
       els.bubble.textContent = `${cur.title} · ${pct}%`;
-      els.bubble.style.transform = `translate(${lineX - els.bubble.offsetWidth - 22}px, ${railY - 13}px)`;
+      const bw = els.bubble.offsetWidth;
+      els.bubble.style.transform = flat
+        ? `translate(${clamp(railX - bw / 2, 8, w - bw - 8)}px, ${railY - riderLen - 40}px)`
+        : `translate(${railX - bw - 22}px, ${railY - 13}px)`;
     }
     if (live && !hintAt) hintAt = now;
     flag(els.hint, "show", live && !rail.state.used && now - hintAt < motion.rail.hintFor && !small);
-    els.hint.style.transform = `translate(${lineX - 110}px, ${railY + 22}px) rotate(-6deg)`;
+    els.hint.style.transform = `translate(${railX - 110}px, ${railY + 22}px) rotate(-6deg)`;
 
     /* speed lines */
     const SL = motion.speedLines;
@@ -286,21 +299,29 @@ export function startRide(els: RideElements): () => void {
       const sp = Math.abs(vel),
         dir = Math.sign(vel);
       const n = Math.min(SL.maxPerFrame, Math.floor(sp / 7));
+      const axis = flat ? "x" : "y";
       for (let i = 0; i < n; i++) {
         const pink = Math.random() < 0.3;
         fx.streak(
-          rnd(lineX + 6, lineX + riderLen),
-          railY + rnd(-10, 10),
+          flat ? railX + rnd(-10, 10) : rnd(railX + 6, railX + riderLen),
+          flat ? rnd(railY - riderLen, railY - 6) : railY + rnd(-10, 10),
           clamp(sp * 4, 24, 150),
           dir,
           pink ? colors.pink : colors.ink,
           pink ? 3 : 2,
           SL.life,
+          false,
+          axis,
         );
       }
       if (sp > SL.whoosh && Math.random() < 0.6) {
-        fx.streak(rnd(lineX - 60, lineX - 18), rnd(0, h), rnd(80, 260), dir, colors.ink, 1.5, 0.35, true);
-        fx.streak(rnd(w - 16, w - 4), rnd(0, h), rnd(80, 260), dir, colors.ink, 1.5, 0.35, true);
+        if (flat) {
+          fx.streak(rnd(0, w), railY + rnd(8, 16), rnd(80, 200), dir, colors.ink, 1.5, 0.35, true, axis);
+          fx.streak(rnd(0, w), railY - riderLen - rnd(10, 30), rnd(80, 200), dir, colors.ink, 1.5, 0.35, true, axis);
+        } else {
+          fx.streak(rnd(railX - 60, railX - 18), rnd(0, h), rnd(80, 260), dir, colors.ink, 1.5, 0.35, true, axis);
+          fx.streak(rnd(w - 16, w - 4), rnd(0, h), rnd(80, 260), dir, colors.ink, 1.5, 0.35, true, axis);
+        }
       }
     }
 
@@ -345,7 +366,7 @@ export function startRide(els: RideElements): () => void {
         };
       }
 
-      // stunt: crouch, jump with a 360, land in a wall ride on the rail
+      // stunt: crouch, jump with a 360, land on the rail (a wall ride on desktop, a grind on phones)
       const M = motion.stunt;
       const e1 = clamp(ts / M.crouchEnd),
         e2 = clamp((ts - M.crouchEnd) / (1 - M.crouchEnd)),
@@ -366,9 +387,10 @@ export function startRide(els: RideElements): () => void {
       }
 
       const scale = lerp(Sh, Sr, ef);
-      const x = lerp(hx, lineX + 2, ef);
-      let yy = lerp(groundY, railY, ef) - Math.sin(Math.PI * e2) * h * M.arcHeight;
-      const top = yy - S.height * scale * Math.cos((ef * Math.PI) / 2) * 0.95;
+      const x = lerp(hx, flat ? railX : railX + 2, ef);
+      let yy = lerp(groundY, flat ? railY - 2 : railY, ef) - Math.sin(Math.PI * e2) * h * M.arcHeight;
+      const roll = flat ? 0 : ef; // how far he has turned onto his side
+      const top = yy - S.height * scale * Math.cos((roll * Math.PI) / 2) * 0.95;
       if (top < M.topClearance) yy += M.topClearance - top;
 
       // head + eyes follow the cursor (hero, or rail when the pointer is close)
@@ -395,9 +417,9 @@ export function startRide(els: RideElements): () => void {
         yy,
         scale,
         reduce ? 0 : ef * Math.PI * 2 * M.spins,
-        lerp(0, -Math.PI / 2, ef) + lean,
+        (-Math.PI / 2) * roll + lean,
         lerp(0.15, 0.1, ef),
-        lerp(S.heroYaw + pz.yaw, S.railYaw, ef) + face,
+        lerp(S.heroYaw + pz.yaw, flat ? S.grindYaw : S.railYaw, ef) + face,
       );
       skater.render();
     }

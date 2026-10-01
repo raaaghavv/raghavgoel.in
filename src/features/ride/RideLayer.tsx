@@ -71,8 +71,9 @@ export default function RideLayer() {
         <div className={s.readout}>
           {labels.runReadout} <span data-ride="pct">0</span>%
         </div>
-        <button data-ride="toTop" className={s.toTop} type="button">
-          {labels.backToStart}
+        <button data-ride="toTop" className={s.toTop} type="button" aria-label={labels.backToStart.text}>
+          <span aria-hidden="true">{labels.backToStart.icon}</span>
+          <span className={s.toTopText}>{labels.backToStart.text}</span>
         </button>
         <div data-ride="fallback" className={s.fallback} />
       </nav>

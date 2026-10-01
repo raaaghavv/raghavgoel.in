@@ -61,10 +61,15 @@ export const cardTints = { ai: "#FFD1E8", ops: "#CBD5FF", be: "#F4FFB0", frame: 
 export const partyColors = [colors.pink, colors.acid, colors.blue, colors.white, colors.cyan];
 
 export const layout = {
-  /** distance of the rail line from the right edge */
-  railRight: { desktop: 96, mobile: 60 },
-  /** right padding that keeps content clear of the rail */
-  contentRight: { desktop: 150, mobile: 76 },
+  /** desktop: the rail runs down the right side, this far from the edge */
+  railRight: 96,
+  /** phones (≤ mobileBreakpoint): the rail runs along the bottom instead */
+  bottomRail: {
+    /** rail line height above the screen bottom (plus the safe area) */
+    inset: 26,
+  },
+  /** right padding that keeps content clear of the rail (on phones the rail is at the bottom: just the gutter) */
+  contentRight: { desktop: 150, mobile: 16 },
   gutter: { desktop: 24, mobile: 16 },
   maxWidth: 1280,
   mobileBreakpoint: 700,
@@ -81,11 +86,12 @@ export function themeCss(): string {
     .map(([k, v]) => `--card-${k}:${v};`)
     .join("");
   const l = [
-    `--rail-right:${layout.railRight.desktop}px;`,
+    `--rail-right:${layout.railRight}px;`,
     `--content-right:${layout.contentRight.desktop}px;`,
     `--gutter:${layout.gutter.desktop}px;`,
     `--max-width:${layout.maxWidth}px;`,
+    `--rail-bottom:${layout.bottomRail.inset}px;`,
   ].join("");
-  const m = `--rail-right:${layout.railRight.mobile}px;--content-right:${layout.contentRight.mobile}px;--gutter:${layout.gutter.mobile}px;`;
+  const m = `--content-right:${layout.contentRight.mobile}px;--gutter:${layout.gutter.mobile}px;`;
   return `:root{color-scheme:light;${c}${t}${l}}@media (max-width:${layout.mobileBreakpoint}px){:root{${m}}}`;
 }

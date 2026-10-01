@@ -21,6 +21,8 @@ type Particle =
   | { k: "ring"; x: number; y: number; life: number; max: number }
   | {
       k: "streak";
+      /** the axis the streak runs along */
+      ax: "x" | "y";
       x: number;
       y: number;
       len: number;
@@ -73,8 +75,18 @@ export function createFx(canvas: HTMLCanvasElement) {
         c: Math.random() < 0.5 ? colors.acid : colors.pink,
       });
     },
-    streak(x: number, y: number, len: number, dir: number, c: string, wd: number, max: number, faint = false) {
-      parts.push({ k: "streak", x, y, len, dir, c, wd, faint, life: 0, max });
+    streak(
+      x: number,
+      y: number,
+      len: number,
+      dir: number,
+      c: string,
+      wd: number,
+      max: number,
+      faint = false,
+      ax: "x" | "y" = "y",
+    ) {
+      parts.push({ k: "streak", ax, x, y, len, dir, c, wd, faint, life: 0, max });
     },
     skid(x0: number, x1: number, y: number) {
       if (!skid) skid = { x0, x1, y, age: 0 };
@@ -212,7 +224,8 @@ export function createFx(canvas: HTMLCanvasElement) {
             const len = q.len * (1 - f * 0.5);
             ctx.beginPath();
             ctx.moveTo(q.x, q.y);
-            ctx.lineTo(q.x, q.y - q.dir * len);
+            if (q.ax === "x") ctx.lineTo(q.x - q.dir * len, q.y);
+            else ctx.lineTo(q.x, q.y - q.dir * len);
             ctx.stroke();
             break;
           }

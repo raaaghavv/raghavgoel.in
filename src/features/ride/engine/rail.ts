@@ -6,6 +6,8 @@ import type { LiveCheckpoint, RideContext } from "./types";
 /**
  * The scrollbar: checkpoint layout, grab-and-drag with preserved offset,
  * press-anywhere-to-jump, magnet snap to checkpoints and keyboard control.
+ * Desktop runs it down the right side; phones (`geo.flat`) run it along the bottom. Positions along it are
+ * handed to CSS as `--at` / `--fill` so the same code serves both.
  */
 export function createRail(ctx: RideContext) {
   const { els, root } = ctx;
@@ -23,24 +25,33 @@ export function createRail(ctx: RideContext) {
     };
   });
 
-  const geo = { top: 0, height: 1, docMax: 1, railRight: layout.railRight.desktop };
-  const state = { drag: null as null | { id: number; y0: number; p0: number }, used: false };
+  /** start/length: where the rail begins and how long it is along its axis; line: the rail's fixed other coordinate */
+  const geo = { flat: false, start: 0, length: 1, line: 0, docMax: 1 };
+  const state = { drag: null as null | { id: number; a0: number; p0: number }, used: false };
 
   function measure() {
     const r = els.rail.getBoundingClientRect();
-    geo.top = r.top;
-    geo.height = r.height;
-    geo.railRight = window.innerWidth <= layout.mobileBreakpoint ? layout.railRight.mobile : layout.railRight.desktop;
+    geo.flat = window.innerWidth <= layout.mobileBreakpoint;
+    geo.start = geo.flat ? r.left : r.top;
+    geo.length = Math.max(1, geo.flat ? r.width : r.height);
+    geo.line = geo.flat ? r.top + r.height / 2 : window.innerWidth - layout.railRight;
     geo.docMax = Math.max(1, root.scrollHeight - window.innerHeight);
+    els.thumb.setAttribute("aria-orientation", geo.flat ? "horizontal" : "vertical");
     // one anchor per checkpoint, at the exact section top: the rail dot, every navigation and "current" detection
     // all use it. The start line is the page top; later ones are capped at the page bottom (a short finish lands there).
     cps.forEach((c, i) => {
       c.top = i === 0 ? 0 : clamp(c.section.offsetTop, 0, geo.docMax);
       c.p = c.top / geo.docMax;
-      c.li.style.top = c.p * geo.height + "px";
+      c.li.style.setProperty("--at", c.p * geo.length + "px");
     });
   }
 
+  /** screen point on the rail at progress p */
+  const at = (p: number) => {
+    const a = geo.start + clamp(p) * geo.length;
+    return geo.flat ? { x: a, y: geo.line } : { x: geo.line, y: a };
+  };
+  const axis = (e: PointerEvent) => (geo.flat ? e.clientX : e.clientY);
   const scrollY = () => ctx.lenis?.scroll ?? window.scrollY;
   const progress = () => clamp(scrollY() / geo.docMax);
   const setP = (p: number) => {
@@ -65,15 +76,15 @@ export function createRail(ctx: RideContext) {
   function startDrag(e: PointerEvent, jump: boolean) {
     e.preventDefault();
     state.used = true;
-    const pj = clamp((e.clientY - geo.top) / geo.height);
+    const pj = clamp((axis(e) - geo.start) / geo.length);
     if (jump) setP(pj);
-    state.drag = { id: e.pointerId, y0: e.clientY, p0: jump ? pj : progress() };
+    state.drag = { id: e.pointerId, a0: axis(e), p0: jump ? pj : progress() };
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     root.dataset.grabbing = "";
   }
   function moveDrag(e: PointerEvent) {
     if (!state.drag || e.pointerId !== state.drag.id) return;
-    setP(state.drag.p0 + (e.clientY - state.drag.y0) / geo.height);
+    setP(state.drag.p0 + (axis(e) - state.drag.a0) / geo.length);
   }
   function endDrag(e: PointerEvent) {
     if (!state.drag || e.pointerId !== state.drag.id) return;
@@ -92,6 +103,8 @@ export function createRail(ctx: RideContext) {
       {
         ArrowDown: p + step,
         ArrowUp: p - step,
+        ArrowRight: p + step,
+        ArrowLeft: p - step,
         PageDown: (cps[i + 1] ?? cps[i]).p,
         PageUp: prev.p,
         Home: 0,
@@ -136,6 +149,7 @@ export function createRail(ctx: RideContext) {
     geo,
     state,
     measure,
+    at,
     progress,
     goTo,
     current,

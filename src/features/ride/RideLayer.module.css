@@ -1,4 +1,8 @@
-/* State is set by the engine through data attributes: data-live, data-hit, data-cur, data-show, data-party, data-clear. */
+/*
+ * State is set by the engine through data attributes: data-live, data-hit, data-cur, data-show, data-party, data-clear.
+ * Positions along the rail come in as --at (checkpoints, fallback) and --fill (progress), in px from the rail start.
+ * Desktop: the rail runs down the right side. Phones (≤700px): it runs along the bottom; see the media query at the end.
+ */
 .root {
   display: contents;
 }
@@ -150,6 +154,7 @@
   top: 0;
   right: calc(var(--rail-right) - 2px);
   width: 4px;
+  height: var(--fill, 0px);
   background: var(--pink);
   border-radius: 2px;
   pointer-events: none;
@@ -162,6 +167,7 @@
 }
 .cps li {
   position: absolute;
+  top: var(--at, 0px);
   right: calc(var(--rail-right) - 9px);
   transform: translateY(-50%);
 }
@@ -283,6 +289,9 @@
     transform 0.25s,
     box-shadow 0.12s;
 }
+.toTop span + span {
+  margin-left: 0.5em;
+}
 .toTop[data-show] {
   opacity: 1;
   transform: none;
@@ -295,6 +304,7 @@
 .fallback {
   display: none;
   position: absolute;
+  top: var(--at, 0px);
   right: calc(var(--rail-right) - 14px);
   width: 28px;
   height: 40px;
@@ -379,9 +389,98 @@
   opacity: 1;
 }
 
+/* ---------- phones: the rail lies along the bottom and the rider grinds it ---------- */
 @media (max-width: 700px) {
   .lbl,
   .readout {
     display: none;
+  }
+  .rail {
+    top: auto;
+    bottom: calc(var(--rail-bottom) + env(safe-area-inset-bottom));
+    left: calc(var(--gutter) + 10px);
+    right: calc(var(--gutter) + 18px);
+    width: auto;
+    height: 4px;
+  }
+  /* paper band under the bar so the page behind doesn't fight it */
+  .rail::before {
+    content: "";
+    position: absolute;
+    left: calc(-1 * var(--gutter) - 10px);
+    right: calc(-1 * var(--gutter) - 18px);
+    top: -14px;
+    bottom: calc(-1 * var(--rail-bottom) - env(safe-area-inset-bottom));
+    background: linear-gradient(to top, var(--paper) 70%, transparent);
+    pointer-events: none;
+  }
+  .track {
+    top: -18px;
+    bottom: -18px;
+    left: -12px;
+    right: -12px;
+    width: auto;
+  }
+  .track::before,
+  .track:hover::before,
+  :global(html[data-grabbing]) .track::before {
+    top: 50%;
+    bottom: auto;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    height: 4px;
+    transform: translateY(-50%);
+  }
+  :global(html[data-grabbing]) .track::before {
+    height: 6px;
+  }
+  .fill {
+    top: 0;
+    left: 0;
+    right: auto;
+    width: var(--fill, 0px);
+    height: 4px;
+  }
+  .cps li,
+  .cps li.fin {
+    top: 2px;
+    left: var(--at, 0px);
+    right: auto;
+    transform: translate(-50%, -50%);
+  }
+  .dot {
+    width: 14px;
+    height: 14px;
+    border-width: 2.5px;
+  }
+  .fin .dot,
+  .cps li.fin[data-hit] .dot,
+  .cps li.fin[data-cur] .dot {
+    width: 22px;
+    height: 22px;
+  }
+  /* arrow-only, at the right end above the finish flag */
+  .toTop {
+    top: auto;
+    bottom: 74px;
+    right: -14px;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+  }
+  .toTopText {
+    display: none;
+  }
+  .fallback {
+    top: 2px;
+    left: var(--at, 0px);
+    right: auto;
+    width: 36px;
+    height: 24px;
+    transform: translate(-50%, -50%);
   }
 }

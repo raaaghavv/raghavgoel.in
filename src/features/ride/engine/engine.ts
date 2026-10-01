@@ -191,6 +191,17 @@ export function startRide(els: RideElements): () => void {
   window.addEventListener("resize", onResize);
   window.addEventListener("load", onResize);
   const measureLater = window.setTimeout(onResize, 800);
+  // the page can change height without a resize (fonts landing, the phone deck zoom, form errors, a hot reload);
+  // re-measure then too, or the rail's page length goes stale and the end stops short of 100%
+  let remeasure = 0;
+  const pageSize = new ResizeObserver(() => {
+    cancelAnimationFrame(remeasure);
+    remeasure = requestAnimationFrame(() => {
+      rail.measure();
+      ctx.lenis?.resize();
+    });
+  });
+  pageSize.observe(document.body);
 
   /* ---------- per-frame state ---------- */
   const spring = createPoseSpring();
@@ -439,6 +450,8 @@ export function startRide(els: RideElements): () => void {
     clearTimeout(failsafe);
     clearTimeout(bannerTimer);
     clearTimeout(measureLater);
+    pageSize.disconnect();
+    cancelAnimationFrame(remeasure);
     window.removeEventListener("pointermove", onPointer);
     document.removeEventListener("pointerleave", onLeave);
     window.removeEventListener("resize", onResize);

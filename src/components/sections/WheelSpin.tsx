@@ -3,12 +3,13 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { motion } from "@/config/motion";
 
-type Wheel = { el: SVGGElement; angle: number; vel: number; delay: number };
+type Wheel = { el: SVGGElement; row: Element | null; angle: number; vel: number; delay: number };
 
 /**
  * Wheels roll into the section: each gets a spin kick when the section enters the viewport
  * (scaled by how fast you scrolled in), then friction brings it to a natural stop.
- * Hovering a wheel flicks it with the same physics. Targets elements marked [data-spin].
+ * Hovering a wheel flicks it with the same physics, and swiping a sideways row (phones) rolls
+ * its wheels like they're on the ground. Targets elements marked [data-spin].
  */
 export default function WheelSpin({ children, className }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -19,6 +20,7 @@ export default function WheelSpin({ children, className }: { children: ReactNode
     const W = motion.wheels;
     const wheels: Wheel[] = [...root.querySelectorAll<SVGGElement>("[data-spin]")].map((el) => ({
       el,
+      row: el.closest("ul"),
       angle: 0,
       vel: 0,
       delay: 0,
@@ -99,11 +101,35 @@ export default function WheelSpin({ children, className }: { children: ReactNode
     };
     root.addEventListener("pointerover", onHover);
 
+    // a row scrolled sideways: content moving left rolls the wheels counter-clockwise, 360° per circumference
+    const rowX = new WeakMap<Element, { x: number; t: number }>();
+    const onRowScroll = (e: Event) => {
+      const row = e.target as Element;
+      const now = performance.now(),
+        prev = rowX.get(row) ?? { x: row.scrollLeft, t: now };
+      rowX.set(row, { x: row.scrollLeft, t: now });
+      const dx = row.scrollLeft - prev.x;
+      if (!dx) return;
+      const dt = Math.max(0.008, (now - prev.t) / 1000);
+      for (const w of wheels) {
+        if (w.row !== row) continue;
+        const deg = (-dx * 360) / (Math.PI * w.el.getBoundingClientRect().width);
+        w.angle = (w.angle + deg) % 360;
+        const maxVel = W.entryKick + W.speedBoostMax;
+        w.vel = Math.max(-maxVel, Math.min(maxVel, (deg / dt) * W.rollCoast));
+        w.delay = 0;
+        w.el.style.transform = `rotate(${w.angle}deg)`;
+      }
+      run();
+    };
+    root.addEventListener("scroll", onRowScroll, { capture: true, passive: true });
+
     return () => {
       cancelAnimationFrame(raf);
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
       root.removeEventListener("pointerover", onHover);
+      root.removeEventListener("scroll", onRowScroll, { capture: true });
     };
   }, []);
 

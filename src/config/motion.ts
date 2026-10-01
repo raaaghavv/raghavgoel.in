@@ -79,6 +79,8 @@ export const motion = {
     /** ±fraction of random variation per wheel */
     jitter: 0.3,
     hoverKick: 540,
+    /** swiping a wheel row (phones) rolls its wheels by the distance travelled; this fraction of that speed coasts on */
+    rollCoast: 0.35,
     /** inside once this fraction of the viewport into view, from the bottom or top edge */
     enterAt: 0.15,
   },

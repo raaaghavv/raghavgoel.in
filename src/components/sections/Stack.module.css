@@ -24,6 +24,10 @@
   display: grid;
   gap: 40px;
 }
+/* let a group shrink to the column so a sideways wheel row scrolls inside it instead of widening the page */
+.groups > * {
+  min-width: 0;
+}
 .groups h3 {
   font: 700 15px/1 var(--font-body);
   font-stretch: 125%;
@@ -63,4 +67,34 @@
   font: 600 10.5px/1 var(--font-mono);
   color: var(--muted);
   letter-spacing: 0.04em;
+}
+
+/* phones: each category is two rows that scroll sideways, edge to edge; the next column peeks in */
+@media (max-width: 700px) {
+  .wheels {
+    --cols: 3.4;
+    --gap-x: 12px;
+    grid-template-columns: none;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - (var(--cols) - 1) * var(--gap-x)) / var(--cols));
+    gap: 18px var(--gap-x);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+    margin-inline: calc(-1 * var(--gutter)) calc(-1 * var(--content-right));
+    padding: 4px var(--content-right) 8px var(--gutter);
+  }
+  .wheels::-webkit-scrollbar {
+    display: none;
+  }
+  .wheel {
+    scroll-snap-align: start;
+  }
+  .wheel small {
+    font-size: 10px;
+    white-space: nowrap;
+  }
 }

@@ -1,4 +1,6 @@
 .decks {
+  /* deck width before the phone zoom; DeckRow reads it to fit the row */
+  --deck-w: 184px;
   list-style: none;
   margin: 0;
   display: flex;
@@ -12,9 +14,26 @@
   flex: 0 0 auto;
   scroll-snap-align: start;
 }
+/* phones: the row runs edge to edge like the wheel strips, so the next deck peeks in at the screen edge */
+@media (max-width: 700px) {
+  .decks {
+    margin-inline: calc(-1 * var(--gutter)) calc(-1 * var(--content-right));
+    padding-inline: calc(var(--gutter) + 4px) var(--content-right);
+    scroll-padding-inline: calc(var(--gutter) + 4px);
+    /* swipe only, like the wheel strips; desktop keeps its thin scrollbar for mouse users */
+    scrollbar-width: none;
+  }
+  .decks::-webkit-scrollbar {
+    display: none;
+  }
+  /* scaled by DeckRow so a partial deck always shows at the edge */
+  .decks > li {
+    zoom: var(--deck-zoom, 1);
+  }
+}
 
 .deck {
-  width: 184px;
+  width: var(--deck-w);
   height: 560px;
   perspective: 1400px;
 }

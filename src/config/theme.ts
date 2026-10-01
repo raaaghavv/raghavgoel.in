@@ -70,6 +70,8 @@ export const layout = {
   },
   /** right padding that keeps content clear of the rail (on phones the rail is at the bottom: just the gutter) */
   contentRight: { desktop: 150, mobile: 16 },
+  /** phones: decks are scaled (within zoom) so the row shows whole decks plus part of the next one, a swipe cue */
+  deckRow: { peek: { min: 0.25, max: 0.65 }, zoom: { min: 0.8, max: 1.2 } },
   gutter: { desktop: 24, mobile: 16 },
   maxWidth: 1280,
   mobileBreakpoint: 700,

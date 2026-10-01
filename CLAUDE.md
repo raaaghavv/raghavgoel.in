@@ -21,7 +21,7 @@ No Tailwind, no GSAP, no UI kits. Keep dependencies minimal: ask before adding o
   animation numbers (`motion.ts`), crawler list, SEO asset paths. Components never hard-code copy, colors or timings.
 - `src/types/content.ts`: typed schemas for the config.
 - `src/components/sections/`: server-rendered sections. Interactivity lives in small `'use client'` leaves
-  (Deck, Card, CopyEmail, WheelSpin, DeckRow, CardBinder).
+  (Deck, Card, WheelSpin, DeckRow, CardBinder, CopyButton, ContactForm, LocalTime, ParkEntry).
 - `src/features/ride/`: the animation layer (skater, rail scrollbar, effects). `RideLayer.tsx` server-renders hidden
   overlay markup and boots the engine in an effect; `bootScript.ts` is the inline `<head>` script that hides the hero
   name before first paint. `engine/` is framework-free TypeScript.
@@ -52,7 +52,8 @@ No Tailwind, no GSAP, no UI kits. Keep dependencies minimal: ask before adding o
 
 - `npm run check`, then a real browser pass (Playwright against the dev server or `out/`). Check: intro reveal and drift,
   scroll-triggered stunt and glide, rail drag and snap, checkpoint banners, hash deep links and reload, wheel spin,
-  deck nudge, holo wave, course clear, Back to start, and a 390px viewport. There must be no console errors.
+  deck nudge, holo wave, course clear, Back to start, and a 390px viewport (bottom rail grind, wheel strips, card
+  deck swipe), and the contact board (copy, form validation, email fallback). There must be no console errors.
 - For visual parity or layout questions, measure sizes and positions in the browser instead of guessing.
 
 ## Scoped rules

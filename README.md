@@ -54,7 +54,8 @@ and roll back in. `engine/` is plain TypeScript driven by one `requestAnimationF
 - `skaterRig.ts`: toon-shaded rig with inverted-hull outlines, pose application, cursor look-at
 - `poses.ts`: pose library, push cycle and critically damped joint springs
 - `stunt.ts`: hero ↔ rail state machine; scroll intent triggers it, Lenis holds and glides the scroll
-- `rail.ts`: checkpoint layout, drag with preserved offset, snap, keyboard scrollbar
+- `rail.ts`: checkpoint layout, drag with preserved offset, snap, keyboard scrollbar. Down the right side on
+  desktop; along the bottom on phones, where the skater grinds it
 - `fx.ts`: 2D canvas for smoke, sparks, skid marks, speed lines, confetti and fireworks
 
 Sections are server-rendered markup. The engine finds them through data attributes: `data-checkpoint`, `data-title`,
@@ -74,3 +75,7 @@ With `prefers-reduced-motion` or no WebGL, there is no scroll lock or particles,
 ## Deploy
 
 Set `NEXT_PUBLIC_SITE_URL` (see `.env.example`) and deploy `out/` to any static host: Vercel, Netlify, Cloudflare Pages or S3.
+
+The contact form needs no server. Set `NEXT_PUBLIC_CONTACT_ENDPOINT` to a form service endpoint (for example
+Formspree or Web3Forms; it receives a JSON POST of `name`, `email` and `message`) and messages land in your inbox.
+Leave it empty and the form opens the visitor's email app with the message filled in.

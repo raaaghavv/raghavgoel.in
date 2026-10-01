@@ -36,11 +36,15 @@ paths:
 - **Scroll:** Lenis owns smooth scrolling. Lock with `lenis.stop()`/`start()`, and glide with `lenis.scrollTo(..., { force, lock })`.
   Intercept wheel intent via Lenis's `virtualScroll` hook; touch and keys have their own handlers. Leave
   `history.scrollRestoration` alone, because the browser's native restore is what makes reloads land correctly.
+- **Two rail layouts, one engine.** Desktop runs the rail down the right side (the rider wall-rides it, on his
+  side). Phones (`geo.flat`, ≤ `layout.mobileBreakpoint`) run it along the bottom (he grinds it upright). Get screen
+  positions from `rail.at(p)`, and hand positions along the rail to CSS as `--at` / `--fill`. Never branch on axis
+  in CSS-facing code beyond that; the module CSS picks top/left and height/width per layout.
 - **One anchor per checkpoint** (`rail.ts`): the section's exact top, capped at the page bottom. The rail dot,
   "current" detection, the URL hash and every navigation path (stunt glide, dot click, `hashchange`, deep link, hero
   links) use it. Never scroll to a different offset, or the rider and dot fall out of sync.
-- **The banner is the only thing that fires early:** `motion.banner.lead` (a fraction of the viewport) before the
-  anchor, when scrolling down. A refresh or deep link shows the landed section's banner once.
+- **The banner is the only thing that fires early:** `motion.banner.lead` (a fraction of the viewport; a portrait
+  value and a landscape value, picked by screen shape, not the width breakpoint) before the anchor, when scrolling down. A refresh or deep link shows the landed section's banner once.
 - **URL hash** mirrors the current checkpoint via `history.replaceState` (no history spam). Deep links skip the intro
   and start in rail mode. `hashchange` navigates with the right move for the current mode.
 - **Feel:** big transitions are triggered by intent and play on a timer, then glide. Continued input fast-forwards

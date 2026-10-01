@@ -107,7 +107,8 @@ export default function WheelSpin({
     const draw = (dt: number) => {
       if (!back) return;
       for (const { c, g } of layers) g.clearRect(0, 0, c.width, c.height);
-      puffs = puffs.filter((q) => (q.life += dt) < q.max);
+      // drop finished puffs, and any whose numbers went bad (a puff with NaN in it would throw on the canvas)
+      puffs = puffs.filter((q) => (q.life += dt) < q.max && Number.isFinite(q.x + q.y + q.vx + q.vy + q.r + q.grow));
       for (const q of puffs) {
         const f = q.life / q.max;
         q.x += q.vx * dt;
@@ -117,7 +118,7 @@ export default function WheelSpin({
         // soft haze: white core, a grey edge, fading out; thickest early, thinning as it grows
         const g = q.front && front ? front : back;
         // the front wisps are thinner so the wheels and labels stay readable through them
-        const R = q.r + q.grow * Math.sqrt(f),
+        const R = Math.max(0.1, q.r + q.grow * Math.sqrt(f)),
           a = (1 - f) * (1 - f) * 0.75 * (q.front ? 0.6 : 1);
         const grad = g.createRadialGradient(q.x, q.y, 0, q.x, q.y, R);
         grad.addColorStop(0, rgba(colors.white, a));
@@ -223,7 +224,9 @@ export default function WheelSpin({
       const dt = Math.max(0.008, (now - prev.t) / 1000);
       for (const w of wheels) {
         if (w.row !== row) continue;
-        const deg = (-dx * 360) / (Math.PI * w.el.getBoundingClientRect().width);
+        const width = w.el.getBoundingClientRect().width;
+        if (!width) continue; // not laid out (hidden): no circumference to roll by
+        const deg = (-dx * 360) / (Math.PI * width);
         w.angle = (w.angle + deg) % 360;
         const maxVel = W.entryKick + W.speedBoostMax;
         w.vel = Math.max(-maxVel, Math.min(maxVel, (deg / dt) * W.rollCoast));

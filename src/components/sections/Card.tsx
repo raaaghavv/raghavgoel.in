@@ -7,7 +7,8 @@ import s from "./Certificates.module.css";
 /** Holo trading card that tilts toward the pointer. Writes CSS vars directly: no re-render per move. */
 export default function Card({ cert: c, number }: { cert: Certificate; number: string }) {
   const onMove = (e: PointerEvent<HTMLElement>) => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // tilt follows a mouse only; on touch the finger is swiping the deck
+    if (e.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const el = e.currentTarget,
       r = el.getBoundingClientRect();
     const px = (e.clientX - r.left) / r.width,

@@ -54,4 +54,6 @@ export const labels = {
   rangeSeparator: " — ",
   flipHint: "Flip for build notes",
   deckResult: ["Problem", "Built", "Result"],
+  cardPrev: "Previous card",
+  cardNext: "Next card",
 };

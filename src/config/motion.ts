@@ -131,6 +131,17 @@ export const motion = {
     /** one foil sweep, ms (passed to CSS as --shine-ms) */
     duration: 1000,
   },
+  cardDeck: {
+    /** phones: each card behind the top one sits this much further right (px), down (px) and turned (deg) */
+    fan: { x: 8, y: 4, rotate: 1.3 },
+    /** a swipe past this many px, or a flick faster than flickSpeed px/ms, changes the card */
+    swipeAt: 70,
+    flickSpeed: 0.45,
+    /** the swiped card flies off this long before it tucks in at the back */
+    toss: 260,
+    /** card move transition (passed to CSS as --deck-ms) */
+    settle: 460,
+  },
   speedLines: { threshold: 5, whoosh: 16, maxPerFrame: 3, life: 0.26 },
   drift: { smoke: 0.9, sparks: 0.5 },
   celebration: {

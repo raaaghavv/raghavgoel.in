@@ -122,16 +122,24 @@ export const motion = {
     bannerFor: 2400,
     cheerFor: 1800,
     fireworksEvery: 260,
+    /** landscape: course clear fires at this progress (the very bottom) and re-arms below resetBelow */
     triggerAt: 0.995,
     resetBelow: 0.9,
+    /**
+     * portrait screens: course clear fires at the finish's banner point instead, like every other checkpoint banner,
+     * and re-arms once the visitor is this fraction of the viewport back above it
+     */
+    portraitReset: 0.1,
   },
   banner: {
     showFor: 1300,
     /**
      * the checkpoint banner fires this fraction of the viewport before a section's top reaches the viewport top
      * (scrolling down). Only the banner is early; dots, "current" and the URL hash use the exact section top.
+     * Picked by screen shape: portrait screens (phones, upright tablets) get more, because on a tall narrow screen
+     * a heading has already crossed most of the screen by then.
      */
-    lead: 0.15,
+    lead: { landscape: 0.15, portrait: 0.35 },
   },
   lenis: { lerp: 0.1, wheelMultiplier: 1 },
 } as const;

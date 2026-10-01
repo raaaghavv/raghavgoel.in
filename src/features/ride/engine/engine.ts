@@ -207,7 +207,8 @@ export function startRide(els: RideElements): () => void {
     lastBanner = 0;
   /** last checkpoint whose banner point (section top minus motion.banner.lead of the viewport) is at or above y */
   const bannerIndex = (y: number) => {
-    const early = window.innerHeight * motion.banner.lead;
+    const L = motion.banner.lead;
+    const early = window.innerHeight * (window.innerHeight > window.innerWidth ? L.portrait : L.landscape);
     let idx = 0;
     rail.cps.forEach((c, k) => {
       if (k > 0 && y >= c.top - early - 1) idx = k;
@@ -240,8 +241,13 @@ export function startRide(els: RideElements): () => void {
     if (bI > lastBanner && dy > 0 && ts >= 0.99 && bI > 0 && bI < lastI) showBanner(bI);
     lastBanner = bI;
     if (hashReady && !rail.state.drag) writeHash(ts >= 0.99 || curI > 0 ? cur.id : rail.cps[0].id);
-    if (!celebrated && p >= motion.celebration.triggerAt && ts >= 0.99) celebrate();
-    if (celebrated && p < motion.celebration.resetBelow) celebrated = false;
+    // course clear: on portrait screens at the finish's banner point (like the other banners), else at the very bottom
+    const C = motion.celebration,
+      portrait = h > w;
+    const atFinish = portrait ? bI === lastI : p >= C.triggerAt;
+    const awayFromFinish = portrait ? bannerIndex(y + h * C.portraitReset) < lastI : p < C.resetBelow;
+    if (!celebrated && atFinish && ts >= 0.99) celebrate();
+    if (celebrated && awayFromFinish) celebrated = false;
 
     /* rail UI */
     const { geo } = rail;

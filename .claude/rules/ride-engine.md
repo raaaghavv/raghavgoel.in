@@ -43,6 +43,8 @@ paths:
 - **One anchor per checkpoint** (`rail.ts`): the section's exact top, capped at the page bottom. The rail dot,
   "current" detection, the URL hash and every navigation path (stunt glide, dot click, `hashchange`, deep link, hero
   links) use it. Never scroll to a different offset, or the rider and dot fall out of sync.
+  The one exception is where the finish flag is drawn: always at the rail's end, so the rider reaches it at 100%
+  even when the last section is taller than the screen. Its anchor (navigation, hash, "current") is unchanged.
 - **The banner is the only thing that fires early:** `motion.banner.lead` (a fraction of the viewport; a portrait
   value and a landscape value, picked by screen shape, not the width breakpoint) before the anchor, when scrolling down. A refresh or deep link shows the landed section's banner once.
 - **URL hash** mirrors the current checkpoint via `history.replaceState` (no history spam). Deep links skip the intro

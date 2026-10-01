@@ -42,7 +42,10 @@ export function createRail(ctx: RideContext) {
     cps.forEach((c, i) => {
       c.top = i === 0 ? 0 : clamp(c.section.offsetTop, 0, geo.docMax);
       c.p = c.top / geo.docMax;
-      c.li.style.setProperty("--at", c.p * geo.length + "px");
+      // the finish flag is drawn at the end of the rail, so the rider reaches it at 100% even when the last
+      // section is taller than the screen (its anchor, for navigation and the hash, stays the section top)
+      const end = i === cps.length - 1;
+      c.li.style.setProperty("--at", (end ? geo.length : c.p * geo.length) + "px");
     });
   }
 

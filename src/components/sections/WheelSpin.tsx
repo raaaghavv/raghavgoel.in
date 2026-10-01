@@ -110,7 +110,7 @@ export default function WheelSpin({
       // drop finished puffs, and any whose numbers went bad (a puff with NaN in it would throw on the canvas)
       puffs = puffs.filter((q) => (q.life += dt) < q.max && Number.isFinite(q.x + q.y + q.vx + q.vy + q.r + q.grow));
       for (const q of puffs) {
-        const f = q.life / q.max;
+        const f = Math.min(1, Math.max(0, q.life / q.max));
         q.x += q.vx * dt;
         q.y += q.vy * dt;
         q.vx *= 0.95; // drag: it slows as it spreads
@@ -120,6 +120,7 @@ export default function WheelSpin({
         // the front wisps are thinner so the wheels and labels stay readable through them
         const R = Math.max(0.1, q.r + q.grow * Math.sqrt(f)),
           a = (1 - f) * (1 - f) * 0.75 * (q.front ? 0.6 : 1);
+        if (!Number.isFinite(q.x + q.y + R + a)) continue;
         const grad = g.createRadialGradient(q.x, q.y, 0, q.x, q.y, R);
         grad.addColorStop(0, rgba(colors.white, a));
         grad.addColorStop(0.5, rgba(colors.paper2, a * 0.7));
@@ -136,7 +137,8 @@ export default function WheelSpin({
     let raf = 0,
       last = 0;
     const tick = (now: number) => {
-      const dt = Math.min(0.05, (now - last) / 1000 || 0.016);
+      // the first frame after run() can be stamped a touch before `last`: never let time run backwards
+      const dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
       last = now;
       let moving = false;
       for (const w of wheels) {

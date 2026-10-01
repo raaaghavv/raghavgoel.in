@@ -142,6 +142,14 @@ export const motion = {
     /** card move transition (passed to CSS as --deck-ms) */
     settle: 460,
   },
+  park: {
+    /** inside once this fraction of the viewport into view, from the bottom or top edge */
+    enterAt: 0.2,
+    /** the deck swings in and comes to rest against the board */
+    lean: { delay: 150, duration: 700 },
+    /** the "let's build" sticker slaps onto the board's edge */
+    sticker: { delay: 600, duration: 460 },
+  },
   speedLines: { threshold: 5, whoosh: 16, maxPerFrame: 3, life: 0.26 },
   drift: { smoke: 0.9, sparks: 0.5 },
   celebration: {

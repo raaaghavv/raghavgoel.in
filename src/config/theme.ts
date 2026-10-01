@@ -57,6 +57,20 @@ export const skaterLighting = {
 /** Card-binder backgrounds per certificate type. */
 export const cardTints = { ai: "#FFD1E8", ops: "#CBD5FF", be: "#F4FFB0", frame: "#F5D90A" };
 
+/** The contact board and the skatepark behind it (rendered as --park-* variables). */
+export const parkColors = {
+  board: "#243A30",
+  cream: "#F1E7CC",
+  bulb: "#FFD56B",
+  leaf: "#7E9A72",
+  leafDark: "#56704F",
+  concrete: "#CDC8BB",
+  steel: "#5C5952",
+  ramp: "#D9D4C8",
+  post: "#8C6440",
+  wood: "#C9A27A",
+};
+
 /** Particle palette for confetti and fireworks. */
 export const partyColors = [colors.pink, colors.acid, colors.blue, colors.white, colors.cyan];
 
@@ -87,6 +101,9 @@ export function themeCss(): string {
   const t = Object.entries(cardTints)
     .map(([k, v]) => `--card-${k}:${v};`)
     .join("");
+  const f = Object.entries(parkColors)
+    .map(([k, v]) => `--park-${kebab(k)}:${v};`)
+    .join("");
   const l = [
     `--rail-right:${layout.railRight}px;`,
     `--content-right:${layout.contentRight.desktop}px;`,
@@ -95,5 +112,5 @@ export function themeCss(): string {
     `--rail-bottom:${layout.bottomRail.inset}px;`,
   ].join("");
   const m = `--content-right:${layout.contentRight.mobile}px;--gutter:${layout.gutter.mobile}px;`;
-  return `:root{color-scheme:light;${c}${t}${l}}@media (max-width:${layout.mobileBreakpoint}px){:root{${m}}}`;
+  return `:root{color-scheme:light;${c}${t}${f}${l}}@media (max-width:${layout.mobileBreakpoint}px){:root{${m}}}`;
 }

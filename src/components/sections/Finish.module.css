@@ -1,5 +1,11 @@
+/*
+ * The finish line: a painted contact board standing in a skatepark, posts running off the bottom of the page.
+ * The scene is fixed-size tiles (fence, trees, concrete) that repeat to any width, plus props (ParkScene) that scale
+ * with the screen only up to 1440px. Board paint, bulbs and scene colours are --park-* tokens from theme.ts.
+ */
 .finish {
   margin-top: 70px;
+  overflow-x: clip;
 }
 .checker {
   height: 56px;
@@ -7,83 +13,535 @@
   background: conic-gradient(var(--ink) 25%, var(--paper) 0 50%, var(--ink) 0 75%, var(--paper) 0) 0 0 / 50px 50px;
 }
 .finish .section {
-  padding-block: 56px 90px;
+  padding-block: 56px 0;
 }
-.body {
-  display: grid;
-  gap: 24px;
+.headRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 14px 30px;
+  margin-top: -14px;
+  padding-bottom: 8px;
 }
 .pitch {
   font-size: 20px;
   max-width: 42ch;
 }
-
-.mail {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
-}
-.address {
-  font: 600 17px/1 var(--font-mono);
-  border: 3px solid var(--ink);
-  padding: 14px 16px;
-  background: var(--white);
-  text-decoration: none;
-  max-width: 100%;
-  overflow-wrap: anywhere;
-}
-
-.stickers {
-  list-style: none;
-  padding: 8px 0;
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px 20px;
-  align-items: center;
-}
-.sticker {
-  text-decoration: none;
-  font: 400 21px/1 var(--font-display);
-  border: 3px solid var(--ink);
-  padding: 20px 24px;
-  box-shadow: 5px 5px 0 var(--ink);
-  transition: transform 0.2s var(--spring);
-  display: grid;
-  gap: 6px;
-}
-.sticker small {
-  font: 600 11px/1 var(--font-mono);
-  letter-spacing: 0.04em;
-}
-.sticker[data-shape="tag"] {
-  background: var(--acid);
-  transform: rotate(-5deg);
-  border-radius: 18px;
-}
-.sticker[data-shape="round"] {
-  background: var(--blue);
-  color: var(--white);
-  transform: rotate(3deg);
-  border-radius: 50%;
-  width: 140px;
-  height: 140px;
-  place-content: center;
-  text-align: center;
-  padding: 0;
-}
-.sticker[data-shape="block"] {
-  background: var(--pink);
-  transform: rotate(-2deg);
-  border-radius: 4px;
-}
-.sticker:hover {
-  transform: rotate(0deg) scale(1.06);
-}
-
 .foot {
   font: 600 11px/1.5 var(--font-mono);
   color: var(--muted);
   letter-spacing: 0.04em;
+  max-width: 34ch;
+}
+
+/* ---------- the park ---------- */
+.park {
+  position: relative;
+  overflow: hidden;
+}
+.scene {
+  position: absolute;
+  inset: 0;
+  --ground: 52%;
+  --fence-h: 150px;
+  background: radial-gradient(rgb(18 18 18 / 0.16) 1.3px, transparent 1.6px) 0 0 / 9px 9px;
+}
+.trees {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% - var(--ground) + var(--fence-h) - 80px);
+  height: 150px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='150' viewBox='0 0 720 150'%3E %3Cg fill='%2356704f' stroke='%23121212' stroke-width='3'%3E %3Cpath d='M20 150 q20-70 80-56 q24-60 92-30 q52-40 96 14 q44-6 50 44 q26 8 22 28 Z'/%3E %3Cpath d='M400 150 q24-56 70-44 q30-52 84-20 q54-30 78 30 q40 0 32 34 Z'/%3E%3C/g%3E %3Cg fill='%237e9a72'%3E%3Cpath d='M80 150 q22-50 66-40 q30-40 74-6 q36-6 36 46 Z'/%3E%3Cpath d='M470 150 q22-46 62-36 q28-36 66 0 q30 0 28 36 Z'/%3E%3C/g%3E%3C/svg%3E")
+    center bottom / 720px 150px repeat-x;
+}
+.fence {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% - var(--ground));
+  height: var(--fence-h);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='150' viewBox='0 0 240 150'%3E %3Cpath d='M-150 150L-6 6M-150 6L-6 150M-130 150L14 6M-130 6L14 150M-110 150L34 6M-110 6L34 150M-90 150L54 6M-90 6L54 150M-70 150L74 6M-70 6L74 150M-50 150L94 6M-50 6L94 150M-30 150L114 6M-30 6L114 150M-10 150L134 6M-10 6L134 150M10 150L154 6M10 6L154 150M30 150L174 6M30 6L174 150M50 150L194 6M50 6L194 150M70 150L214 6M70 6L214 150M90 150L234 6M90 6L234 150M110 150L254 6M110 6L254 150M130 150L274 6M130 6L274 150M150 150L294 6M150 6L294 150M170 150L314 6M170 6L314 150M190 150L334 6M190 6L334 150M210 150L354 6M210 6L354 150M230 150L374 6M230 6L374 150M250 150L394 6M250 6L394 150M270 150L414 6M270 6L414 150M290 150L434 6M290 6L434 150M310 150L454 6M310 6L454 150M330 150L474 6M330 6L474 150M350 150L494 6M350 6L494 150M370 150L514 6M370 6L514 150' stroke='%236d6a62' stroke-width='1.6' fill='none' opacity='0.8'/%3E %3Crect width='240' height='7' fill='%235c5952'/%3E%3Crect width='8' height='150' fill='%235c5952'/%3E%3C/svg%3E")
+    center bottom / 240px var(--fence-h) repeat-x;
+}
+.ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--ground);
+  bottom: 0;
+  border-top: 4px solid var(--ink);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E %3Cfilter id='g' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='11' stitchTiles='stitch'/%3E %3CfeColorMatrix type='matrix' values='0 0 0 0 0.25 0 0 0 0 0.24 0 0 0 0 0.22 0 0 0 9 -5.6'/%3E%3C/filter%3E %3Crect width='220' height='220' filter='url%28%23g%29' opacity='0.5'/%3E%3C/svg%3E")
+      0 0 / 220px 220px,
+    repeating-linear-gradient(180deg, transparent 0 156px, rgb(0 0 0 / 0.2) 156px 159px),
+    repeating-linear-gradient(90deg, transparent 0 477px, rgb(0 0 0 / 0.16) 477px 480px) center top,
+    var(--park-concrete);
+}
+.props {
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  width: min(100%, 1440px);
+  aspect-ratio: 1440 / 560;
+  bottom: calc(100% - var(--ground));
+  display: block;
+}
+
+/* same content box as .wrap, so on desktop the board stays clear of the rail on the right */
+.rig {
+  /* ground below the board; the section ends where the leaning deck's tail meets the bottom edge */
+  --foot: clamp(64px, 6vw, 96px);
+  position: relative;
+  max-width: calc(var(--max-width) + var(--gutter) + var(--content-right));
+  margin-inline: auto;
+  padding: clamp(28px, 2.6vw, 38px) var(--content-right) var(--foot) var(--gutter);
+}
+/* the board's footprint: posts below it, the deck resting on its right edge */
+.stand {
+  position: relative;
+  max-width: 1000px;
+  margin-inline: auto;
+}
+.posts {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 40%;
+  bottom: calc(-1 * var(--foot) - 40px);
+  display: flex;
+  justify-content: space-between;
+  padding-inline: 10%;
+  pointer-events: none;
+}
+.posts i {
+  width: clamp(22px, 2.6vw, 36px);
+  background:
+    repeating-linear-gradient(180deg, transparent 0 34px, rgb(0 0 0 / 0.12) 34px 36px),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--park-post) 75%, #000),
+      var(--park-post) 45%,
+      color-mix(in srgb, var(--park-post) 75%, #000)
+    );
+  border-inline: 3px solid var(--ink);
+}
+
+/* ---------- the board: painted plywood, cream frame, marquee bulbs ---------- */
+.board {
+  position: relative;
+  z-index: 1;
+  border: 4px solid var(--ink);
+  border-radius: 10px 10px 4px 4px;
+  padding: clamp(18px, 3vw, 36px);
+  padding-top: clamp(28px, 3.6vw, 42px);
+  color: var(--park-cream);
+  background:
+    linear-gradient(rgb(255 255 255 / 0.07), transparent 30%),
+    repeating-linear-gradient(
+      93deg,
+      rgb(0 0 0 / 0.07) 0 2px,
+      transparent 2px 9px,
+      rgb(255 255 255 / 0.03) 9px 11px,
+      transparent 11px 23px
+    ),
+    var(--park-board);
+  box-shadow:
+    inset 0 0 0 10px var(--park-cream),
+    inset 0 0 0 13px var(--ink),
+    10px 12px 0 rgb(0 0 0 / 0.28);
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) auto minmax(0, 1.1fr);
+  gap: clamp(18px, 3vw, 40px);
+}
+.board::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(rgb(241 231 204 / 0.1) 1px, transparent 1.5px) 0 0 / 13px 11px;
+}
+.bulbs {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: -14px;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.bulbs i {
+  width: 16px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: radial-gradient(circle at 40% 35%, #fff6d8, var(--park-bulb) 55%, #d9a63a);
+  box-shadow: 0 0 10px 2px color-mix(in srgb, var(--park-bulb) 70%, transparent);
+}
+.bulbs i:nth-child(odd) {
+  animation: chase 1.6s steps(1) infinite;
+}
+.bulbs i:nth-child(even) {
+  animation: chase 1.6s steps(1) 0.8s infinite;
+}
+@keyframes chase {
+  50% {
+    background: #8a7448;
+    box-shadow: none;
+  }
+}
+.rule {
+  width: 0;
+  border-left: 2px dashed rgb(241 231 204 / 0.35);
+}
+.reach,
+.msg {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  min-width: 0;
+}
+.tagHead {
+  justify-self: start;
+  font: 400 clamp(15px, 1.6vw, 19px) / 1 var(--font-display);
+  background: var(--acid);
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  padding: 10px 14px 9px;
+  box-shadow: 3px 3px 0 var(--ink);
+  rotate: -2deg;
+  margin-bottom: 4px;
+}
+.contacts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+.contacts li {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 6.5em;
+  align-items: center;
+  gap: 14px;
+}
+.ico {
+  width: 42px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  background: var(--park-cream);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 7px;
+  box-shadow: 2px 2px 0 rgb(0 0 0 / 0.4);
+}
+.ico svg {
+  width: 22px;
+  height: 22px;
+}
+.who {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.who b {
+  font: 600 15px/1.2 var(--font-mono);
+}
+.who span {
+  font: 400 13px/1.3 var(--font-mono);
+  opacity: 0.82;
+  overflow-wrap: anywhere;
+}
+.act {
+  position: relative;
+  justify-self: end;
+  font: 600 12px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--park-cream);
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 8px 10px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  background: none;
+}
+.act:hover,
+.act:focus-visible {
+  border-color: var(--park-cream);
+}
+.copy {
+  background: var(--park-cream);
+  color: var(--ink);
+  border-color: var(--ink);
+  box-shadow: 2px 2px 0 rgb(0 0 0 / 0.4);
+}
+.copy:hover,
+.copy:focus-visible {
+  background: var(--acid);
+  border-color: var(--ink);
+}
+.tip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  translate: -50% 6px;
+  background: var(--ink);
+  color: var(--white);
+  border: 2px solid var(--park-cream);
+  font: 600 12px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: none;
+  white-space: nowrap;
+  padding: 8px 10px;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.15s,
+    translate 0.25s var(--spring);
+}
+.tip[data-show] {
+  opacity: 1;
+  translate: -50% 0;
+}
+.based {
+  display: grid;
+  gap: 10px;
+  margin-top: 6px;
+}
+.lab {
+  font: 800 13px/1 var(--font-body);
+  font-stretch: 125%;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.place {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+  font: 600 16px/1 var(--font-mono);
+}
+.place svg {
+  width: 20px;
+  height: 20px;
+}
+.chip {
+  font: 600 12px/1 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  border: 2px solid rgb(241 231 204 / 0.7);
+  border-radius: 4px;
+  padding: 6px 8px;
+}
+
+/* ---------- the form ---------- */
+.msgHead {
+  font: 400 clamp(19px, 2vw, 24px) / 1 var(--font-marker);
+}
+.form {
+  display: grid;
+  gap: 12px;
+}
+.field {
+  display: grid;
+  gap: 4px;
+  background: var(--park-cream);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 5px;
+  padding: 9px 12px 8px;
+  box-shadow: 2px 3px 0 rgb(0 0 0 / 0.35);
+  transition: box-shadow 0.15s;
+}
+.field:focus-within {
+  box-shadow:
+    0 0 0 3px var(--acid),
+    2px 3px 0 rgb(0 0 0 / 0.35);
+}
+.field label {
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.field label i {
+  font-style: normal;
+  color: var(--pink);
+}
+.field input,
+.field textarea {
+  border: 0;
+  background: transparent;
+  font: 400 15px/1.4 var(--font-mono);
+  color: var(--ink);
+  padding: 2px 0;
+  resize: vertical;
+  min-width: 0;
+}
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.75;
+}
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+}
+.field[data-error] {
+  border-color: var(--pink);
+  box-shadow:
+    0 0 0 3px var(--pink),
+    2px 3px 0 rgb(0 0 0 / 0.35);
+}
+.err {
+  font: 600 11.5px/1.3 var(--font-mono);
+  color: var(--pink);
+}
+.trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.formFoot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.status {
+  font: 600 12px/1.4 var(--font-mono);
+  color: var(--acid);
+  max-width: 34ch;
+  overflow-wrap: anywhere;
+}
+.status[data-tone="bad"] {
+  color: var(--pink);
+}
+.send {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  font: 400 clamp(15px, 1.5vw, 18px) / 1 var(--font-display);
+  background: var(--acid);
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  padding: 15px 24px 14px;
+  box-shadow: 4px 4px 0 var(--ink);
+  cursor: pointer;
+  transition:
+    transform 0.15s var(--spring),
+    box-shadow 0.2s;
+}
+.send svg {
+  width: 18px;
+  height: 18px;
+}
+.send:hover,
+.send:focus-visible {
+  transform: scale(1.04);
+  box-shadow:
+    4px 4px 0 var(--ink),
+    0 0 0 6px color-mix(in srgb, var(--acid) 25%, transparent),
+    0 0 28px color-mix(in srgb, var(--acid) 55%, transparent);
+}
+.send:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+.send:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+/* ---------- on the board's edges ---------- */
+.sticker {
+  position: absolute;
+  z-index: 3;
+  /* hangs just over the board's left edge */
+  left: clamp(-16px, -1vw, -6px);
+  bottom: -26px;
+  rotate: -4deg;
+  font: 800 clamp(15px, 1.8vw, 21px) / 1 var(--font-body);
+  font-stretch: 112%;
+  background: var(--pink);
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  padding: 12px 18px 11px;
+  box-shadow: 4px 4px 0 var(--ink);
+  pointer-events: none;
+}
+/* the deck: foot out on the ground to the right, top resting on the board's edge */
+.lean {
+  position: absolute;
+  z-index: 2;
+  right: calc(-1 * clamp(110px, 11vw, 150px));
+  bottom: calc(-1 * var(--foot));
+  width: clamp(78px, 8.6vw, 118px);
+  rotate: -13deg;
+  transform-origin: 50% 100%;
+  pointer-events: none;
+  filter: drop-shadow(6px 6px 0 rgb(0 0 0 / 0.25));
+}
+.lean svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 860px) {
+  /* phones: room under the board so the rider on the bottom rail never covers the send button */
+  .rig {
+    --foot: 110px;
+  }
+  .board {
+    grid-template-columns: 1fr;
+  }
+  .rule {
+    width: auto;
+    height: 0;
+    border-left: 0;
+    border-top: 2px dashed rgb(241 231 204 / 0.35);
+  }
+  .lean {
+    display: none;
+  }
+  .posts {
+    top: 70%;
+    padding-inline: 8%;
+  }
+  .scene {
+    --ground: 58%;
+  }
+  .contacts li {
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+    gap: 12px;
+  }
+  .ico {
+    width: 36px;
+  }
+  .ico svg {
+    width: 19px;
+    height: 19px;
+  }
+  .who span {
+    font-size: 12px;
+  }
+  .act {
+    padding-inline: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bulbs i {
+    animation: none;
+  }
 }

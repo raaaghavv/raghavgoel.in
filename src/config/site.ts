@@ -1,6 +1,7 @@
 import type { Publication, SiteConfig } from "@/types/content";
 
 const url = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://raghavgoel.in").replace(/\/$/, "");
+const email = "work.raghav01@gmail.com";
 
 export const site: SiteConfig = {
   name: { first: "Raghav", last: "Goel", full: "Raghav Goel" },
@@ -9,8 +10,9 @@ export const site: SiteConfig = {
     "Raghav Goel is a full-stack engineer at ManufApp building AI agents, real-time systems and the cloud infrastructure behind them.",
   url,
   locale: "en_IN",
-  email: "work.raghav01@gmail.com",
+  email,
   location: "Greater Noida, India",
+  timezone: { label: "UTC +5:30", iana: "Asia/Kolkata" },
   availability: "Open to work",
   employer: { name: "ManufApp" },
   education: {
@@ -31,20 +33,35 @@ export const site: SiteConfig = {
   },
   contact: {
     pitch: "Building with AI agents or real-time systems? Tell me what you're working on.",
-    copyLabel: "Copy email",
-    copiedLabel: "Copied",
+    reachTitle: "Reach me",
+    emailLabel: "Email",
+    copyLabel: "Copy",
+    copiedLabel: "Copied!",
+    openLabel: "Open",
+    basedIn: "Based in",
+    sticker: "Let's build something!",
+    tag: "RG '26",
+    form: {
+      title: "Send a message",
+      endpoint: process.env.NEXT_PUBLIC_CONTACT_ENDPOINT || undefined,
+      fields: {
+        name: { label: "Name", placeholder: "Your name", error: "Name is required" },
+        email: { label: "Email", placeholder: "you@company.com", error: "Enter an email I can reply to" },
+        message: { label: "Message", placeholder: "What are you building?", error: "Tell me a little about it" },
+      },
+      send: "Send message",
+      sending: "Sending…",
+      sent: "Sent. I'll get back to you soon.",
+      failed: "That didn't go through. Email me directly:",
+      opening: "Opening your email app with the message filled in.",
+      subject: "Portfolio: message from {name}",
+    },
   },
   socials: [
-    { kind: "github", label: "GitHub", handle: "raaaghavv", href: "https://github.com/raaaghavv", sticker: "tag" },
-    {
-      kind: "linkedin",
-      label: "LinkedIn",
-      handle: "raghav-goel01",
-      href: "https://www.linkedin.com/in/raghav-goel01",
-      sticker: "round",
-    },
+    { kind: "linkedin", label: "LinkedIn", handle: "raghav-goel01", href: "https://www.linkedin.com/in/raghav-goel01" },
+    { kind: "github", label: "GitHub", handle: "raaaghavv", href: "https://github.com/raaaghavv" },
   ],
-  resume: { href: "/resume/RaghavGoel_Resume.pdf", label: "one page · PDF" },
+  resume: { title: "Résumé", href: "/resume/RaghavGoel_Resume.pdf", label: "one page · PDF" },
   footnote: "Skater, skates and every graphic on this page are drawn in code.",
 };
 

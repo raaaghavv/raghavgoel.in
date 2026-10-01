@@ -7,8 +7,34 @@ export interface Social {
   label: string;
   handle: string;
   href: string;
-  /** sticker shape/color variant, see Finish.module.css */
-  sticker: "tag" | "round" | "block";
+}
+
+/** One field of the contact form */
+export interface FormField {
+  label: string;
+  placeholder: string;
+  /** shown under the field when it fails validation */
+  error: string;
+}
+
+/** The "Send a message" form on the contact board */
+export interface ContactForm {
+  title: string;
+  /**
+   * Where the form posts (JSON: name, email, message), e.g. a Formspree or Web3Forms endpoint. Without one the
+   * form opens the visitor's email app with the message filled in.
+   */
+  endpoint?: string;
+  fields: { name: FormField; email: FormField; message: FormField };
+  send: string;
+  sending: string;
+  sent: string;
+  /** shown when posting fails; the email address is appended */
+  failed: string;
+  /** shown when there is no endpoint and the email app is opened instead */
+  opening: string;
+  /** email subject; {name} is replaced */
+  subject: string;
 }
 
 export interface SiteConfig {
@@ -19,6 +45,8 @@ export interface SiteConfig {
   locale: string;
   email: string;
   location: string;
+  /** shown next to the location, with the current local time */
+  timezone: { label: string; iana: string };
   availability: string;
   employer: { name: string; url?: string };
   education: { school: string; degree: string; from: string; to?: string };
@@ -29,9 +57,23 @@ export interface SiteConfig {
     scribble: string;
     ctas: { label: string; href: string; primary?: boolean }[];
   };
-  contact: { pitch: string; copyLabel: string; copiedLabel: string };
+  contact: {
+    pitch: string;
+    /** heading sticker over the links */
+    reachTitle: string;
+    emailLabel: string;
+    copyLabel: string;
+    copiedLabel: string;
+    openLabel: string;
+    basedIn: string;
+    /** sticker slapped across the bottom edge of the board */
+    sticker: string;
+    /** graffiti tag sprayed on the ramp in the background */
+    tag: string;
+    form: ContactForm;
+  };
   socials: Social[];
-  resume: { href: string; label: string };
+  resume: { title: string; href: string; label: string };
   footnote: string;
 }
 

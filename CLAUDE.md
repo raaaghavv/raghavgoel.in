@@ -22,8 +22,9 @@ No Tailwind, no GSAP, no UI kits. Keep dependencies minimal: ask before adding o
 - `src/types/content.ts`: typed schemas for the config.
 - `src/components/sections/`: server-rendered sections. Interactivity lives in small `'use client'` leaves
   (Deck, Card, CopyEmail, WheelSpin, DeckRow, CardBinder).
-- `src/features/ride/`: the client-only animation layer (skater, rail scrollbar, effects), mounted via
-  `next/dynamic({ ssr: false })` from a client file. `engine/` is framework-free TypeScript.
+- `src/features/ride/`: the animation layer (skater, rail scrollbar, effects). `RideLayer.tsx` server-renders hidden
+  overlay markup and boots the engine in an effect; `bootScript.ts` is the inline `<head>` script that hides the hero
+  name before first paint. `engine/` is framework-free TypeScript.
 - `src/app/`: layout (fonts, metadata, theme CSS vars, JSON-LD), page composition, SEO/agent routes.
 - `src/lib/`: shared helpers (`seo.ts`, `text.tsx` for `**bold**` copy, `useEnter.ts` for entry effects).
 

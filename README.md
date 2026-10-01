@@ -46,8 +46,10 @@ Adding a section: add an entry to `checkpoints` in `sections.ts`, create a compo
 
 ## How the ride works
 
-`features/ride` is client-only (`Ride.tsx` → `next/dynamic` with `ssr: false`). `RideLayer.tsx` renders the overlay;
-`engine/` is plain TypeScript driven by one `requestAnimationFrame` loop:
+`RideLayer.tsx` server-renders the overlay (hidden until the engine runs) and starts the engine in an effect. The
+engine is imported statically, so its chunk (three.js) is referenced from the HTML and downloads in parallel with React.
+`bootScript.ts` is an inline `<head>` script that hides the hero name before first paint, so it doesn't show, vanish
+and roll back in. `engine/` is plain TypeScript driven by one `requestAnimationFrame` loop:
 
 - `skaterRig.ts`: toon-shaded rig with inverted-hull outlines, pose application, cursor look-at
 - `poses.ts`: pose library, push cycle and critically damped joint springs

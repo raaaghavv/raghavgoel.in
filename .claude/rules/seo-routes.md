@@ -22,6 +22,8 @@ paths:
 - **AI agents:** `robots.ts` allows `*` and names the AI crawlers from `config/crawlers.ts`. `/llms.txt` (index) and
   `/llms-full.txt` (full profile) are generated from config and linked from `<head>` and the sitemap. When content
   types change, update both generators.
-- **Hydration:** `<body suppressHydrationWarning>` covers browser-extension attributes only. Don't use it anywhere else
-  to hide real mismatches. Avoid `Date.now()`, `Math.random()` and locale formatting in server-rendered output.
-- `next/dynamic` with `ssr: false` must be called from a `'use client'` file (see `features/ride/Ride.tsx`).
+- **Hydration:** `suppressHydrationWarning` is on `<body>` (browser-extension attributes) and `<html>` (the ride boot
+  script's `data-intro-*` attributes) only. Don't use it anywhere else to hide real mismatches. Avoid `Date.now()`,
+  `Math.random()` and locale formatting in server-rendered output.
+- `next/dynamic` with `ssr: false` must be called from a `'use client'` file. The ride doesn't use it; see the
+  ride-engine rule for why.

@@ -10,6 +10,14 @@ paths:
 
 # Ride engine and motion
 
+- **Loading:** `RideLayer.tsx` server-renders its markup (everything starts hidden) and imports the engine statically,
+  so the engine chunk is in the HTML and downloads alongside React. Measured on a throttled phone, `ssr: false` or a
+  lazy `import()` fetches it only after hydration and starts the intro ~300 ms later. The engine must touch
+  `window`/`document` only inside `startRide`, never at module scope.
+- **Intro gate:** `bootScript.ts` sets `html[data-intro-wait]` before first paint (not for reduced motion or
+  deep links), and the hero CSS hides the name while it is set. `startRide` clears it in the same task as it sets
+  `data-intro="pre"`. After `motion.intro.waitFor`, the script shows the name and sets `data-intro-late`, and
+  the engine then skips the intro.
 - **Shape:** `RideLayer.tsx` renders overlay markup and calls `startRide()` once in an effect. Everything else is plain
   TypeScript in `engine/`:
   - `engine.ts`: the single rAF loop and orchestration

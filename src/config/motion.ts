@@ -83,6 +83,20 @@ export const motion = {
     rollCoast: 0.35,
     /** inside once this fraction of the viewport into view, from the bottom or top edge */
     enterAt: 0.15,
+    /** no wheel spins faster than this (deg/s), however much it's flicked */
+    maxSpin: 3600,
+    /** burnout: above `from` deg/s a wheel throws smoke off its contact patch, up to `perFrame` puffs at `full` */
+    smoke: {
+      from: 1100,
+      full: 3000,
+      perFrame: 3,
+      life: [0.9, 1.7],
+      /** px/s at full burnout: how far it rolls out sideways, and how much it blows up behind the wheel */
+      spread: 150,
+      lift: 42,
+      /** share of puffs drawn in front of the wheels (the rest stay behind) */
+      front: 0.25,
+    },
   },
   decks: {
     /** inside once this fraction of the viewport into view, from the bottom or top edge */

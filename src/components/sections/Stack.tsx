@@ -71,7 +71,7 @@ export default function Stack() {
           </div>
           <span>{hi}A</span>
         </div>
-        <WheelSpin className={s.groups}>
+        <WheelSpin className={s.groups} smokeClassName={s.smoke}>
           {wheelGroups.map((g, gi) => (
             <div key={g.name}>
               <h3>{g.name}</h3>

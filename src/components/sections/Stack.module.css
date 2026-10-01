@@ -21,8 +21,24 @@
   white-space: nowrap;
 }
 .groups {
+  position: relative;
   display: grid;
   gap: 40px;
+}
+/* burnout smoke, drawn by WheelSpin behind the wheels (with room under the bottom row for the haze to spread) */
+.smoke {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -24px;
+  width: 100%;
+  height: calc(100% + 24px + 60px);
+  pointer-events: none;
+  z-index: 0;
+}
+/* a few wisps drift in front of the wheels */
+.smoke[data-front] {
+  z-index: 2;
 }
 /* let a group shrink to the column so a sideways wheel row scrolls inside it instead of widening the page */
 .groups > * {
@@ -36,6 +52,9 @@
   margin-bottom: 16px;
 }
 .wheels {
+  /* above the smoke canvas, so the haze stays behind the wheels */
+  position: relative;
+  z-index: 1;
   list-style: none;
   padding: 0;
   margin: 0;

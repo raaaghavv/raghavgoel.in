@@ -93,6 +93,8 @@
     transform 0.45s cubic-bezier(0.2, 1.8, 0.4, 1),
     opacity 0.15s;
 }
+/* hidden from first paint while the engine loads (html[data-intro-wait], set by the ride boot script) */
+:global(html[data-intro-wait]) .name .ch,
 .name[data-intro="pre"] .ch:not([data-on]) {
   opacity: 0;
   transform: translateY(0.35em) rotate(-14deg) scale(0.5);
@@ -101,6 +103,7 @@
   opacity: 1;
   transform: none;
 }
+:global(html[data-intro-wait]) .name .last,
 .name[data-intro="pre"] .last:not([data-on]) {
   opacity: 0;
   transform: rotate(8deg) scale(2.4);

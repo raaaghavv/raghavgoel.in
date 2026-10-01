@@ -13,6 +13,8 @@ export const motion = {
     /** letters reveal once the skater's toe (this many scale units ahead of center) passes 25% into them */
     revealLead: 0.55,
     failsafe: 5000,
+    /** the name is hidden from first paint while the engine loads; past this it shows without the roll-in */
+    waitFor: 4000,
   },
   stunt: {
     toRail: 1250,

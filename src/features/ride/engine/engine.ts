@@ -47,10 +47,14 @@ export function startRide(els: RideElements): () => void {
   };
   // start clean: a previous run (React StrictMode mounts twice in dev) may have left letters revealed
   resetReveal();
+  // the boot script hid the name before first paint; take over (same task, so no frame shows it), or, if it
+  // already gave up waiting and showed the name, skip the intro rather than hide it again
+  const late = root.dataset.introLate !== undefined;
+  delete root.dataset.introWait;
   // opened on a checkpoint (#projects…): skip the intro and start on the rail
   const deepLink = rail.cps.slice(1).find((c) => c.id === decodeURIComponent(window.location.hash.slice(1)));
   let failsafe = 0;
-  if (deepLink) revealAll();
+  if (deepLink || late) revealAll();
   else if (!ctx.simple && revealRoot) {
     revealRoot.dataset.intro = "pre";
     intro.running = true;

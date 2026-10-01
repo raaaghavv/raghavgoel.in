@@ -4,6 +4,7 @@ import { site } from "@/config/site";
 import { colors, themeCss } from "@/config/theme";
 import { personJsonLd } from "@/lib/seo";
 import { iconImage, ogImage } from "@/config/seo";
+import { rideBootScript } from "@/features/ride/bootScript";
 import "@/styles/globals.css";
 
 const bowlby = Bowlby_One({ weight: "400", subsets: ["latin"], variable: "--font-bowlby", display: "swap" });
@@ -56,9 +57,16 @@ export const viewport: Viewport = { themeColor: colors.paper, colorScheme: "ligh
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${bowlby.variable} ${archivo.variable} ${plexMono.variable} ${marker.variable}`}>
+    // the ride boot script sets data-intro-wait on <html> before hydration (this element's attributes only)
+    <html
+      lang="en"
+      className={`${bowlby.variable} ${archivo.variable} ${plexMono.variable} ${marker.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <style dangerouslySetInnerHTML={{ __html: themeCss() }} />
+        {/* runs before first paint: hides the hero name until the intro takes over (features/ride/bootScript.ts) */}
+        <script dangerouslySetInnerHTML={{ __html: rideBootScript() }} />
         {/* without JS nothing arms the entry effects, so show anything that waits to be revealed */}
         <noscript>
           <style>{"[data-armed]{opacity:.9!important}"}</style>

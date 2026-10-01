@@ -4,7 +4,7 @@ import { useEffect, useId, useRef } from "react";
 import type { Stamp as StampData } from "@/types/content";
 import { colors } from "@/config/theme";
 import { motion } from "@/config/motion";
-import { useEnter } from "@/lib/useEnter";
+import { onScreen, useEnter } from "@/lib/useEnter";
 import s from "./Experience.module.css";
 
 /**
@@ -25,11 +25,12 @@ export default function Stamp({ stamp }: { stamp: StampData }) {
     const row = el.closest<HTMLTableRowElement>("tr");
     const wait = S.delay + (row?.sectionRowIndex ?? 0) * S.stagger;
     const press = window.setTimeout(() => {
-      el.dataset.stamped = "";
+      if (onScreen(el)) el.dataset.stamped = ""; // flung past it: stay blank and stamp on the next visit
     }, wait);
     // the moment rubber meets paper: the row takes a small damped thud and a faint ink ring spreads out
     const hit = window.setTimeout(
       () => {
+        if (el.dataset.stamped === undefined) return;
         const { distance: d, rotate: r, duration } = S.thud;
         // damped wobble: each swing smaller and opposite to the last
         const swings = [-1, 0.75, -0.45, 0.25, -0.1];

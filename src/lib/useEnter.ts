@@ -42,3 +42,13 @@ export function useEnter<T extends Element>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref, enterAt]);
 }
+
+/**
+ * True while any part of the element is in the viewport. Delayed entry effects that leave a mark (stamps, stickers)
+ * check it when their timer fires: a quick fling can carry the element off screen first, and a mark made off screen
+ * would greet the next visit already in place instead of being animated.
+ */
+export function onScreen(el: Element) {
+  const r = el.getBoundingClientRect();
+  return r.bottom > 0 && r.top < window.innerHeight;
+}

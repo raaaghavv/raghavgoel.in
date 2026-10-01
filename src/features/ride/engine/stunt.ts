@@ -171,6 +171,8 @@ export function createStunt(ctx: RideContext, rail: Rail, hooks: { finishIntro: 
       { passive: false },
     );
     listen("keydown", (e) => {
+      // typing in a form field (Home, Space, arrows) is text editing, never ride navigation
+      if ((e.target as HTMLElement | null)?.closest?.("input, textarea, select, [contenteditable]")) return;
       const down = ["ArrowDown", "PageDown", "End"].includes(e.key) || (e.key === " " && !e.shiftKey);
       const up = ["ArrowUp", "PageUp"].includes(e.key) || (e.key === " " && e.shiftKey);
       if (s.locked) {

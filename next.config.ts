@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   images: { unoptimized: true },
   reactCompiler: true,
+  // let devices on the LAN load the dev server's scripts (dev only; update if this machine's LAN address changes)
+  allowedDevOrigins: ["192.168.1.48"],
 };
 
 export default nextConfig;

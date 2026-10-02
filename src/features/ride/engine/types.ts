@@ -2,7 +2,8 @@ import type Lenis from "lenis";
 
 /** Overlay elements rendered by RideLayer and handed to the engine. */
 export interface RideElements {
-  skaterCanvas: HTMLCanvasElement;
+  /** full-viewport overlay the rider art is drawn into */
+  skater: SVGSVGElement;
   fxCanvas: HTMLCanvasElement;
   rail: HTMLElement;
   track: HTMLElement;
@@ -15,7 +16,6 @@ export interface RideElements {
   bannerNo: HTMLElement;
   bannerName: HTMLElement;
   toTop: HTMLButtonElement;
-  fallback: HTMLElement;
   /** rail checkpoint <li>s keyed by checkpoint id */
   railItems: Map<string, HTMLElement>;
 }
@@ -36,7 +36,7 @@ export interface LiveCheckpoint {
 export interface RideContext {
   els: RideElements;
   lenis: Lenis | null;
-  /** reduced motion or no WebGL: no scroll hijacking, no particles */
+  /** reduced motion: no scroll hijacking, no particles */
   simple: boolean;
   reduce: boolean;
   root: HTMLElement;

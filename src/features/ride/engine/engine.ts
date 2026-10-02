@@ -4,7 +4,7 @@ import { colors, layout } from "@/config/theme";
 import { labels } from "@/config/sections";
 import { clamp, damp, easeInOut as ease, lerp, rnd } from "./math";
 import { createPoseSpring, mix, POSES, push, type Pose } from "./poses";
-import { createSkater, type Skater } from "./skaterRig";
+import { createSkater } from "./skaterRig";
 import { createFx } from "./fx";
 import { createRail } from "./rail";
 import { createStunt } from "./stunt";
@@ -21,15 +21,9 @@ export function startRide(els: RideElements): () => void {
   const root = document.documentElement;
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  let skater: Skater | null = null;
-  try {
-    skater = createSkater(els.skaterCanvas);
-  } catch (err) {
-    console.warn("WebGL unavailable", err);
-  }
-  if (!skater) root.dataset.noGl = "";
+  const skater = createSkater(els.skater);
 
-  const ctx: RideContext = { els, lenis: null, simple: reduce || !skater, reduce, root };
+  const ctx: RideContext = { els, lenis: null, simple: reduce, reduce, root };
   const fx = createFx(els.fxCanvas);
   const rail = createRail(ctx);
 
@@ -116,12 +110,16 @@ export function startRide(els: RideElements): () => void {
   const onHashChange = () => stunt.navigate(decodeURIComponent(window.location.hash.slice(1)) || rail.cps[0].id);
   window.addEventListener("hashchange", onHashChange);
 
-  /* ---------- pointer for the skater's eyes ---------- */
-  const mouse = { x: 0, y: 0, on: false };
+  /* ---------- pointer for the skater's eyes ----------
+   * He only starts following it once it moves while he can look (standing after the intro, or on the rail): the
+   * intro and the stunt disarm it, so he looks ahead until the visitor moves the pointer again. */
+  const mouse = { x: 0, y: 0, on: false, armed: false };
+  let lookable = false;
   const onPointer = (e: PointerEvent) => {
     mouse.x = e.clientX;
     mouse.y = e.clientY;
     mouse.on = true;
+    if (lookable) mouse.armed = true;
   };
   const onLeave = () => {
     mouse.on = false;
@@ -185,7 +183,6 @@ export function startRide(els: RideElements): () => void {
   const onResize = () => {
     rail.measure();
     fx.resize();
-    skater?.resize();
     ctx.lenis?.resize();
   };
   window.addEventListener("resize", onResize);
@@ -212,6 +209,7 @@ export function startRide(els: RideElements): () => void {
     vel = 0,
     face = 0,
     faceDir = 1,
+    plant = 1,
     dragW = 0,
     hintAt = 0;
   let pr = rail.progress(),
@@ -282,7 +280,6 @@ export function startRide(els: RideElements): () => void {
     // Phones (flat): grinding along the bottom, standing upright on the line.
     const flat = geo.flat;
     const { x: railX, y: railY } = rail.at(pr);
-    els.fallback.style.setProperty("--at", pr * geo.length + "px");
 
     const Sr = small ? S.rail.mobile : S.rail.desktop;
     const riderLen = S.height * Sr;
@@ -343,21 +340,24 @@ export function startRide(els: RideElements): () => void {
     }
 
     /* skater */
-    if (skater && dock) {
+    if (dock) {
       const hs = small ? S.heroMobile : S.hero;
       const Sh = clamp(w * hs.vw, hs.min, hs.max);
       const d = dock.getBoundingClientRect();
       const groundY = d.top;
       let hx = d.left;
       let target: Pose = POSES.stance,
-        stiff: number = S.springs.stance;
+        stiff: number = S.springs.stance,
+        plantTo = 1;
 
       if (intro.running) {
         const k = clamp((now - intro.start) / I.duration);
         hx = lerp(-Sh * I.startOffset, d.left, 1 - Math.pow(1 - k, I.easePower));
         const ph = I.phases;
-        if (k < ph.pushEnd) target = push((k / ph.pushEnd) * I.pushes * Math.PI * 2);
-        else if (k < ph.glideEnd) target = POSES.glide;
+        if (k < ph.pushEnd) {
+          target = push((k / ph.pushEnd) * I.pushes * Math.PI * 2);
+          plantTo = 0; // the pushing skate lifts off
+        } else if (k < ph.glideEnd) target = POSES.glide;
         else if (k < ph.driftEnd) {
           target = POSES.drift;
           fx.skid(hx - Sh * 0.3, hx + Sh * 0.3, groundY - 3);
@@ -375,12 +375,15 @@ export function startRide(els: RideElements): () => void {
           intro.running = false;
           revealAll();
         }
-      } else if (!reduce) {
-        target = {
-          ...POSES.stance,
-          nod: Math.sin(now / S.nodPeriod) * 0.06,
-          sL: POSES.stance.sL + Math.sin(now / 560) * 0.04,
-        };
+      } else {
+        const H = S.stanceHead;
+        target = reduce
+          ? { ...POSES.stance, nod: H.tilt }
+          : {
+              ...POSES.stance,
+              nod: H.tilt + Math.sin(now / S.nodPeriod) * H.nod,
+              sL: POSES.stance.sL + Math.sin(now / 560) * 0.04,
+            };
       }
 
       // stunt: crouch, jump with a 360, land on the rail (a wall ride on desktop, a grind on phones)
@@ -401,6 +404,9 @@ export function startRide(els: RideElements): () => void {
         else if (e2 < M.tuckEnd) target = mix(POSES.crouch, POSES.tuck, ease(e2 / M.tuckEnd));
         else target = mix(POSES.tuck, railPose, ease((e2 - M.tuckEnd) / (1 - M.tuckEnd)));
         stiff = S.springs.stunt;
+        // skates leave the ground through the tuck and settle back onto the rail
+        plantTo =
+          ts < M.crouchEnd ? 1 : e2 < M.tuckEnd ? 1 - ease(e2 / M.tuckEnd) : ease((e2 - M.tuckEnd) / (1 - M.tuckEnd));
       }
 
       const scale = lerp(Sh, Sr, ef);
@@ -410,35 +416,32 @@ export function startRide(els: RideElements): () => void {
       const top = yy - S.height * scale * Math.cos((roll * Math.PI) / 2) * 0.95;
       if (top < M.topClearance) yy += M.topClearance - top;
 
-      // head + eyes follow the cursor (hero, or rail when the pointer is close)
-      if (mouse.on && !reduce) {
-        const L = skater.lookAt(mouse.x, mouse.y);
-        const near = Math.hypot(mouse.x - L.headScreen.x, mouse.y - L.headScreen.y) < S.look.railRadius;
-        if ((ts < 0.12 && !intro.running) || (ts >= 1 && near)) {
-          target = {
-            ...target,
-            hy: clamp(L.yaw, -S.look.yaw, S.look.yaw),
-            hp: clamp(L.pitch, -S.look.pitch, S.look.pitch),
-            nod: target.nod * 0.3,
-          };
-          skater.setPupils(clamp(L.dir.y * 1.6, -1, 1), clamp(L.dir.z * 1.6, -1, 1));
-        } else skater.setPupils(0, 0);
-      } else skater.setPupils(0, 0);
+      // head + eyes follow the pointer (standing at the hero, or on the rail when it is close), once armed
+      const standing = ts < 0.12 && !intro.running,
+        riding = ts >= 1;
+      lookable = !reduce && (standing || riding);
+      if (!lookable) mouse.armed = false;
+      let follow = mouse.on && mouse.armed && standing;
+      if (mouse.on && mouse.armed && riding) {
+        const hd = skater.headScreen();
+        follow = Math.hypot(mouse.x - hd.x, mouse.y - hd.y) < S.look.railRadius;
+      }
+      const pitch = skater.look(follow ? mouse.x : null, mouse.y, dt, reduce);
+      // the pitch eases back to level by itself, so it applies whenever he can look
+      if (standing || riding)
+        target = {
+          ...target,
+          hp: pitch,
+          nod: follow ? (standing ? S.stanceHead.tilt * 0.5 : target.nod * 0.3) : target.nod,
+        };
 
       const pz = reduce ? target : spring(target, dt, stiff);
-      skater.apply(pz);
+      plant = reduce ? plantTo : lerp(plant, plantTo, damp(S.plantRate, dt));
+      skater.apply(pz, plant);
+      // scrolling up the rail he turns round to face the way he rides (squashed through edge-on, like a cut-out)
       face = lerp(face, faceDir < 0 && ts >= 1 ? Math.PI : 0, damp(7, dt));
       const lean = ts >= 1 && !reduce ? clamp(vel * 0.003, -0.15, 0.15) : 0;
-      skater.place(
-        x,
-        yy,
-        scale,
-        reduce ? 0 : ef * Math.PI * 2 * M.spins,
-        (-Math.PI / 2) * roll + lean,
-        lerp(0.15, 0.1, ef),
-        lerp(S.heroYaw + pz.yaw, flat ? S.grindYaw : S.railYaw, ef) + face,
-      );
-      skater.render();
+      skater.place(x, yy, scale, reduce ? 0 : ef * Math.PI * 2 * M.spins, (Math.PI / 2) * roll - lean, Math.cos(face));
     }
     fx.draw(dt);
     raf = requestAnimationFrame(frame);
@@ -461,8 +464,7 @@ export function startRide(els: RideElements): () => void {
     stunt.destroy();
     rail.destroy();
     ctx.lenis?.destroy();
-    skater?.dispose();
+    skater.dispose();
     resetReveal();
-    delete root.dataset.noGl;
   };
 }

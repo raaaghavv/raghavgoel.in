@@ -45,13 +45,24 @@ export const motion = {
     heroMobile: { vw: 0.09, min: 30, max: 40 },
     rail: { desktop: 17, mobile: 14 },
     height: 3.75,
-    heroYaw: -0.45,
-    railYaw: -0.5,
-    /** phones: facing while grinding along the bottom rail (3/4 view, like the hero) */
-    grindYaw: -0.55,
     springs: { push: 260, glide: 120, stance: 170, stunt: 200 },
-    look: { yaw: 0.6, pitch: 0.45, railRadius: 260, depth: 520 },
+    /**
+     * Pointer follow, kept calm: pupils ease over at eyeRate (1/s) and only reach the rim once the pointer is
+     * eyeReach px away; the head eases slower (headRate) and tips at most `pitch` rad. It only starts after the
+     * visitor moves the pointer while he is standing (or near the rail rider, within railRadius px).
+     */
+    look: { pitch: 0.26, eyeRate: 5, eyeReach: 320, headRate: 2.8, railRadius: 260 },
     nodPeriod: 280,
+    /** standing head: a slight tilt toward his right shoulder (screen left) with a small idle nod around it */
+    stanceHead: { tilt: 0.07, nod: 0.025 },
+    /** facing us, the hips read wider: hip spacing × (1 + hipSpread) */
+    hipSpread: 0.75,
+    /** how fast the skates settle onto the ground when he lands (1/s) */
+    plantRate: 12,
+    /** the backflip turns about this point, in rig units above the skates */
+    flipPivot: 1.5,
+    /** px per rig unit below which fine detail (stitches, laces, prints) is left out */
+    detailFrom: 26,
   },
   rail: {
     /** top and bottom insets as fractions of the viewport */

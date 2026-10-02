@@ -12,7 +12,7 @@ behavior, measure against them rather than eyeballing.
 
 ## Stack
 
-Next.js 16 App Router as a **static export** (`out/`), TypeScript (strict), three.js, Lenis. Vanilla CSS modules.
+Next.js 16 App Router as a **static export** (`out/`), TypeScript (strict), Lenis. Vanilla CSS modules.
 No Tailwind, no GSAP, no UI kits. Keep dependencies minimal: ask before adding one, and prefer a few lines of our own code.
 
 ## Architecture
@@ -32,10 +32,10 @@ No Tailwind, no GSAP, no UI kits. Keep dependencies minimal: ask before adding o
 
 1. **Config-driven.** New copy, sections, colors or timings go in `src/config`, typed in `types/content.ts`.
    Adding a checkpoint to `config/sections.ts` should be enough for the rail, numbering, banners and hash to follow.
-2. **One visual language.** Everything is drawn in code (CSS, SVG, three.js toon shading, canvas) in the zine style:
+2. **One visual language.** Everything is drawn in code (CSS, SVG, canvas; the rider is a layered SVG rig) in the zine style:
    paper, thick ink outlines, pink/acid/blue accents. No stock images or icon packs.
 3. **Content first, motion second.** Every word is in the static HTML and readable without JS. Animation is
-   progressive enhancement and must respect `prefers-reduced-motion` and the no-WebGL fallback.
+   progressive enhancement and must respect `prefers-reduced-motion`.
 4. **Motion feels physical.** Prefer springs, friction and scroll-velocity-driven effects over fixed keyframes.
    Scroll _intent_ triggers big moments; never trap the user (extra input fast-forwards).
 5. **Performance.** Per-frame work stays out of React state: write DOM styles or data attributes directly, and run rAF

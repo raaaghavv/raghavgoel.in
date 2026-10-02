@@ -8,7 +8,7 @@ import s from "./RideLayer.module.css";
 
 type Part = Exclude<keyof RideElements, "railItems">;
 const PARTS: Part[] = [
-  "skaterCanvas",
+  "skater",
   "fxCanvas",
   "rail",
   "track",
@@ -21,13 +21,13 @@ const PARTS: Part[] = [
   "bannerNo",
   "bannerName",
   "toTop",
-  "fallback",
 ];
 
 /**
- * Decorative overlay: the skater, effects canvas and the progress-bar scrollbar. It server-renders (all of it
- * starts hidden) and imports the engine statically, so the engine chunk (three.js) is referenced from the HTML
- * and downloads in parallel with React instead of after hydration. The engine only touches the DOM in the effect.
+ * Decorative overlay: the rider (SVG, art added by the engine), effects canvas and the progress-bar scrollbar. It
+ * server-renders (all of it starts hidden) and imports the engine statically, so the engine chunk is referenced from
+ * the HTML and downloads in parallel with React instead of after hydration. The engine only touches the DOM in the
+ * effect.
  */
 export default function RideLayer() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -48,7 +48,7 @@ export default function RideLayer() {
   return (
     <div ref={rootRef} className={s.root}>
       <canvas data-ride="fxCanvas" className={s.fx} aria-hidden="true" />
-      <canvas data-ride="skaterCanvas" className={s.skater} aria-hidden="true" />
+      <svg data-ride="skater" className={s.skater} aria-hidden="true" focusable="false" />
       <div data-ride="banner" className={s.banner} aria-hidden="true">
         <span className={s.trophy}>{labels.finishTrophy}</span>
         <small data-ride="bannerNo" />
@@ -75,7 +75,6 @@ export default function RideLayer() {
           <span aria-hidden="true">{labels.backToStart.icon}</span>
           <span className={s.toTopText}>{labels.backToStart.text}</span>
         </button>
-        <div data-ride="fallback" className={s.fallback} />
       </nav>
 
       <div

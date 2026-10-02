@@ -11,10 +11,10 @@ paths:
   `styles/globals.css`: reset, base, halftone paper, Lenis rules, and shared primitives (`.wrap`, `.tape`, `.btn`, `.sr-only`).
 - **Tokens only.** Colors, card tints and layout sizes are CSS variables generated from `config/theme.ts`
   (`themeCss()` in layout). Fonts are `--font-display`, `--font-body`, `--font-mono` and `--font-marker`. Don't write raw
-  hex in components. If a new color is needed, add it to `theme.ts` so three.js and canvas code share it.
+  hex in components. If a new color is needed, add it to `theme.ts` so CSS and canvas code share it (the rider's paints are `--rider-*`).
 - **State via data attributes**, not class toggles. CSS module class names are hashed, so JS (the engine, entry
   effects) sets `data-live`, `data-cur`, `data-show`, `data-nudge`, `data-shine`, `data-flipped`… and CSS matches on
-  them. Global states on `<html>` (`data-grabbing`, `data-no-gl`) are targeted with `:global(html[data-…])`.
+  them. Global states on `<html>` (`data-grabbing`, `data-intro-wait`) are targeted with `:global(html[data-…])`.
 - **Specificity:** when one module overrides another module's element, scope it (`.finish .section`) or pass a prop
   that sets a data attribute (`<Section size="xl">`). Don't rely on stylesheet load order.
 - **Look:** thick ink borders, hard offset shadows (`var(--shadow)`), slight rotations for stickers and tape, Bowlby

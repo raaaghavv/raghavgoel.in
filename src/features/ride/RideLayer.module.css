@@ -1,6 +1,6 @@
 /*
  * State is set by the engine through data attributes: data-live, data-hit, data-cur, data-show, data-party, data-clear.
- * Positions along the rail come in as --at (checkpoints, fallback) and --fill (progress), in px from the rail start.
+ * Positions along the rail come in as --at (checkpoints) and --fill (progress), in px from the rail start.
  * Desktop: the rail runs down the right side. Phones (≤700px): it runs along the bottom; see the media query at the end.
  */
 .root {
@@ -20,8 +20,209 @@
   inset: 0;
   width: 100%;
   height: 100%;
+  overflow: visible;
   pointer-events: none;
   z-index: 30;
+}
+
+/* ---------- the rider's art (riderArt.ts) ----------
+ * Parts carry short paint classes: .ac hoodie yellow, .bl pants, .pk skates, .sk skin, .hr hair, .wh wheels (…s =
+ * shade). Outlines scale with --ow, which the rig sets from the rider's size. Colours come from --rider-* (theme.ts). */
+.skater :global(.rider) {
+  --c-ink: var(--ink);
+  --c-white: var(--white);
+  --c-acid: var(--rider-acid);
+  --c-acid-sh: var(--rider-acid-shade);
+  --c-pink: var(--rider-pink);
+  --c-pink-sh: var(--rider-pink-shade);
+  --c-blue: var(--rider-blue);
+  --c-blue-sh: var(--rider-blue-shade);
+  --c-skin: var(--rider-skin);
+  --c-skin-sh: var(--rider-skin-shade);
+  --c-hair: var(--rider-hair);
+  --c-hair-hi: var(--rider-hair-light);
+  --c-hair-ln: var(--rider-hair-dark);
+  --c-iris: var(--rider-iris);
+  --c-wheel: var(--rider-wheel);
+  --c-wheel-sh: var(--rider-wheel-shade);
+  --c-hub: var(--rider-hub);
+  --c-plate: var(--rider-plate);
+}
+/* far side (back arm, leg, skate): a touch darker so it reads as behind */
+.skater :global(.rider .far) {
+  --c-acid: var(--rider-far-acid);
+  --c-acid-sh: var(--rider-far-acid-shade);
+  --c-pink: var(--rider-far-pink);
+  --c-pink-sh: var(--rider-far-pink-shade);
+  --c-blue: var(--rider-far-blue);
+  --c-blue-sh: var(--rider-far-blue-shade);
+  --c-skin: var(--rider-far-skin);
+  --c-wheel: var(--rider-far-wheel);
+  --c-wheel-sh: var(--rider-far-wheel-shade);
+}
+.skater :global(.rider .o) {
+  stroke: var(--c-ink);
+  stroke-width: var(--ow);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.skater :global(.rider .ot) {
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 0.62);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.skater :global(.rider .ln),
+.skater :global(.rider .lm),
+.skater :global(.rider .lb),
+.skater :global(.rider .st),
+.skater :global(.rider .u-st),
+.skater :global(.rider .cord),
+.skater :global(.rider .cord-in),
+.skater :global(.rider .aglet),
+.skater :global(.rider .aglet-in),
+.skater :global(.rider .wrim) {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.skater :global(.rider .ln) {
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 0.55);
+}
+.skater :global(.rider .lm) {
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 0.8);
+}
+.skater :global(.rider .lb) {
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 1.2);
+}
+.skater :global(.rider .st) {
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 0.42);
+  stroke-dasharray: 1.6 2.2;
+  opacity: 0.8;
+}
+/* each limb's outline is drawn once under all of its parts, so joints read as one shape */
+.skater :global(.rider .u-st) {
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 2);
+}
+.skater :global(.rider .u-fi) {
+  stroke: none;
+}
+.skater :global(.rider .ac) {
+  fill: var(--c-acid);
+}
+.skater :global(.rider .acs) {
+  fill: var(--c-acid-sh);
+}
+.skater :global(.rider .pk) {
+  fill: var(--c-pink);
+}
+.skater :global(.rider .pks) {
+  fill: var(--c-pink-sh);
+}
+.skater :global(.rider .bl) {
+  fill: var(--c-blue);
+}
+.skater :global(.rider .bls) {
+  fill: var(--c-blue-sh);
+}
+.skater :global(.rider .sk) {
+  fill: var(--c-skin);
+}
+.skater :global(.rider .sks) {
+  fill: var(--c-skin-sh);
+}
+.skater :global(.rider .hr) {
+  fill: var(--c-hair);
+}
+.skater :global(.rider .hlf) {
+  fill: var(--c-hair-hi);
+}
+.skater :global(.rider .crease) {
+  fill: var(--c-hair-ln);
+}
+.skater :global(.rider .k) {
+  fill: var(--c-ink);
+}
+.skater :global(.rider .w) {
+  fill: var(--c-white);
+}
+.skater :global(.rider .ir) {
+  fill: var(--c-iris);
+}
+.skater :global(.rider .wh) {
+  fill: var(--c-wheel);
+}
+.skater :global(.rider .whs) {
+  fill: var(--c-wheel-sh);
+}
+.skater :global(.rider .hub) {
+  fill: var(--c-hub);
+}
+.skater :global(.rider .pl) {
+  fill: var(--c-plate);
+}
+.skater :global(.rider .wrim) {
+  stroke: var(--c-wheel-sh);
+  stroke-width: calc(var(--ow) * 0.7);
+}
+.skater :global(.rider .cord) {
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 1.25);
+}
+.skater :global(.rider .cord-in) {
+  stroke: var(--c-acid);
+  stroke-width: calc(var(--ow) * 0.45);
+}
+.skater :global(.rider .aglet) {
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 1.7);
+}
+.skater :global(.rider .aglet-in) {
+  stroke: var(--c-acid-sh);
+  stroke-width: calc(var(--ow) * 0.75);
+}
+/* the 01 print */
+.skater :global(.rider .n-rim) {
+  fill: var(--c-ink);
+  stroke: var(--c-pink);
+  stroke-width: calc(var(--ow) * 2.1);
+  stroke-linejoin: round;
+}
+.skater :global(.rider .n-ol) {
+  fill: var(--c-ink);
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 1.2);
+  stroke-linejoin: round;
+}
+.skater :global(.rider .n-face) {
+  fill: var(--c-pink);
+}
+/* standing, he faces us (.front): the near skate, the leg prints and the far ear swap to front-facing art,
+   and the seat's side-view curve is left out so the legs meet in a plain seam */
+.skater :global(.rider .sk-front),
+.skater :global(.rider .lg-front),
+.skater :global(.rider .ear-far),
+.skater :global(.rider.front .sk-side),
+.skater :global(.rider.front .lg-side),
+.skater :global(.rider.front .seat) {
+  display: none;
+}
+.skater :global(.rider.front .sk-front),
+.skater :global(.rider.front .lg-front),
+.skater :global(.rider.front .ear-far) {
+  display: inline;
+}
+/* small (the rail): no stitches, laces or print rim */
+.skater :global(.rider.lod .dt) {
+  display: none;
+}
+.skater :global(.rider.lod .n-rim) {
+  stroke-width: 0;
 }
 
 /* ---------- checkpoint banner ---------- */
@@ -301,22 +502,6 @@
   transform: translate(-2px, -2px);
   box-shadow: 5px 5px 0 var(--pink);
 }
-.fallback {
-  display: none;
-  position: absolute;
-  top: var(--at, 0px);
-  right: calc(var(--rail-right) - 14px);
-  width: 28px;
-  height: 40px;
-  background: var(--pink);
-  border: 3px solid var(--ink);
-  border-radius: 10px;
-  transform: translateY(-50%);
-}
-:global(html[data-no-gl]) .fallback {
-  display: block;
-}
-
 /* ---------- grab handle over the rider ---------- */
 .thumb {
   position: fixed;
@@ -474,13 +659,5 @@
   }
   .toTopText {
     display: none;
-  }
-  .fallback {
-    top: 2px;
-    left: var(--at, 0px);
-    right: auto;
-    width: 36px;
-    height: 24px;
-    transform: translate(-50%, -50%);
   }
 }

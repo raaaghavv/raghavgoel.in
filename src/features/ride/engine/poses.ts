@@ -16,9 +16,14 @@ export const POSE_KEYS = [
   "bodyLean",
   "hy",
   "hp",
+  "front",
 ] as const;
 export type PoseKey = (typeof POSE_KEYS)[number];
-/** Joint angles in radians. t = thigh, k = knee, s = shoulder, e = elbow, hy/hp = head yaw/pitch. */
+/**
+ * Joint angles in radians. t = thigh, k = knee, s = shoulder, e = elbow, hy/hp = head yaw/pitch.
+ * front (0..1): how far he turns to face the viewer. Only the standing pose uses it; every riding pose is the side
+ * view he travels in.
+ */
 export type Pose = Record<PoseKey, number>;
 
 export const full = (p: Partial<Pose>): Pose => {
@@ -34,17 +39,19 @@ export const mix = (a: Pose, b: Pose, t: number): Pose => {
 };
 
 export const POSES = {
+  /** standing at the hero, facing us: legs a little apart, the near skate toward us, arms loose at his sides */
   stance: full({
     tL: 0.1,
-    kL: -0.22,
-    tR: -0.08,
-    kR: -0.14,
-    sL: 0.15,
-    eL: 0.35,
-    sR: -0.1,
-    eR: 0.35,
-    lean: 0.05,
+    kL: -0.04,
+    tR: 0.06,
+    kR: -0.03,
+    sL: -0.12,
+    eL: 0.28,
+    sR: 0.2,
+    eR: 0.12,
+    lean: 0.03,
     yaw: -0.55,
+    front: 1,
   }),
   glide: full({
     tL: 0.38,

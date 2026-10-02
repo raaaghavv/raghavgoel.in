@@ -2,8 +2,8 @@ import type { ThemeColor } from "@/types/content";
 
 /**
  * Single source of truth for the palette and shared visual tokens.
- * Rendered as CSS custom properties in app/layout.tsx and imported directly
- * by the three.js skater and the fx canvas, so one edit recolors everything.
+ * Rendered as CSS custom properties in app/layout.tsx (the rider's art paints with them) and imported directly
+ * by the fx canvas, so one edit recolors everything.
  */
 export const colors: Record<ThemeColor, string> = {
   paper: "#EEECE6",
@@ -18,40 +18,38 @@ export const colors: Record<ThemeColor, string> = {
   white: "#FFFFFF",
 };
 
-/** Skater materials (three.js) — derived from the palette where possible. */
-export const skaterColors = {
-  hoodie: colors.acid,
-  pants: colors.blue,
-  skate: colors.pink,
-  wheels: colors.acid,
-  sole: "#151515",
-  skin: "#B97A56",
-  beanie: "#151515",
-  beanieBand: colors.pink,
-  headphones: colors.pink,
-  eyes: colors.white,
-  outline: colors.ink,
-};
-
-/** Number printed on the front and back of the skater's hoodie, like a jersey. */
-export const jersey = {
-  number: "99",
-  fill: colors.ink,
-  outline: colors.pink,
-  /** CSS variable holding the display font family (from next/font) */
-  fontVar: "--font-bowlby",
-  fallbackFont: "Arial Black, Impact, sans-serif",
-};
-
-/** Toon lighting for the skater. three ≥0.155 uses physical light units, hence the π factor. */
-export const skaterLighting = {
-  ambient: 0.55 * Math.PI,
-  sun: 0.75 * Math.PI,
-  sunDirection: [-1, 2, 3] as const,
-  /** 3-band toon ramp (0–255 luminance) */
-  bands: [95, 175, 255],
-  /** inverted-hull outline thickness in skater units */
-  outline: 0.05,
+/**
+ * The rider's palette (rendered as --rider-* variables; RideLayer.module.css paints the art with them). `far` is the
+ * back arm, leg and skate: a touch darker than the near side so it reads as behind.
+ */
+export const riderColors = {
+  acid: colors.acid,
+  acidShade: "#C6DA00",
+  pink: colors.pink,
+  pinkShade: "#DC2C89",
+  blue: colors.blue,
+  blueShade: "#1F3CCB",
+  skin: "#EDA263",
+  skinShade: "#D88C53",
+  hair: "#2E1B10",
+  hairLight: "#43291A",
+  hairDark: "#140A05",
+  iris: "#5E3A1F",
+  wheel: colors.acid,
+  wheelShade: "#B4C700",
+  hub: "#8C8475",
+  plate: "#A6A39A",
+  far: {
+    acid: "#DDF600",
+    acidShade: "#BFD400",
+    pink: "#F23A9B",
+    pinkShade: "#CF2880",
+    blue: "#2849F0",
+    blueShade: "#1C37BE",
+    skin: "#E39A5E",
+    wheel: "#DDF600",
+    wheelShade: "#A9BB00",
+  },
 };
 
 /** Card-binder backgrounds per certificate type. */
@@ -101,6 +99,14 @@ export function themeCss(): string {
   const t = Object.entries(cardTints)
     .map(([k, v]) => `--card-${k}:${v};`)
     .join("");
+  const { far, ...near } = riderColors;
+  const r =
+    Object.entries(near)
+      .map(([k, v]) => `--rider-${kebab(k)}:${v};`)
+      .join("") +
+    Object.entries(far)
+      .map(([k, v]) => `--rider-far-${kebab(k)}:${v};`)
+      .join("");
   const f = Object.entries(parkColors)
     .map(([k, v]) => `--park-${kebab(k)}:${v};`)
     .join("");
@@ -112,5 +118,5 @@ export function themeCss(): string {
     `--rail-bottom:${layout.bottomRail.inset}px;`,
   ].join("");
   const m = `--content-right:${layout.contentRight.mobile}px;--gutter:${layout.gutter.mobile}px;`;
-  return `:root{color-scheme:light;${c}${t}${f}${l}}@media (max-width:${layout.mobileBreakpoint}px){:root{${m}}}`;
+  return `:root{color-scheme:light;${c}${t}${r}${f}${l}}@media (max-width:${layout.mobileBreakpoint}px){:root{${m}}}`;
 }

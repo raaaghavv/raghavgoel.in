@@ -35,3 +35,6 @@ paths:
   The fence, trees and concrete are fixed-size CSS tiles that repeat to any width; the props (`ParkScene.tsx`) scale
   only up to 1440px. The board sits in the same content box as `.wrap`, so on desktop it stays clear of the rail.
   Scene and board colours are `--park-*` tokens (`parkColors` in theme.ts).
+- **The hero sky:** a pale wash across the top of the hero that fades into the paper, with a few soft blurred clouds
+  (CSS only, behind the hero content, edge to edge). Colour and strength are `heroSky` in theme.ts (`--hero-sky-*`).
+  Keep it faint so the plain sections below don't look unfinished.

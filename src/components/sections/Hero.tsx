@@ -15,6 +15,11 @@ export default function Hero() {
       data-alias={start.alias}
       className={`wrap ${s.hero}`}
     >
+      <div className={s.sky} aria-hidden="true">
+        {Array.from({ length: 4 }, (_, i) => (
+          <i key={i} />
+        ))}
+      </div>
       <header className={s.topbar}>
         <span>
           {name.full} / portfolio &apos;{String(new Date().getFullYear()).slice(2)}

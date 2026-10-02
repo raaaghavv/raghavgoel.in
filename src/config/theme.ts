@@ -69,6 +69,9 @@ export const parkColors = {
   wood: "#C9A27A",
 };
 
+/** The sky across the top of the hero: a pale wash fading into the paper, with soft clouds (0 = plain paper, 1 = full). */
+export const heroSky = { tint: "#BFF3F2", cloud: colors.white, strength: 0.5 };
+
 /** Particle palette for confetti and fireworks. */
 export const partyColors = [colors.pink, colors.acid, colors.blue, colors.white, colors.cyan];
 
@@ -110,6 +113,9 @@ export function themeCss(): string {
   const f = Object.entries(parkColors)
     .map(([k, v]) => `--park-${kebab(k)}:${v};`)
     .join("");
+  const h = Object.entries(heroSky)
+    .map(([k, v]) => `--hero-sky-${kebab(k)}:${v};`)
+    .join("");
   const l = [
     `--rail-right:${layout.railRight}px;`,
     `--content-right:${layout.contentRight.desktop}px;`,
@@ -118,5 +124,5 @@ export function themeCss(): string {
     `--rail-bottom:${layout.bottomRail.inset}px;`,
   ].join("");
   const m = `--content-right:${layout.contentRight.mobile}px;--gutter:${layout.gutter.mobile}px;`;
-  return `:root{color-scheme:light;${c}${t}${r}${f}${l}}@media (max-width:${layout.mobileBreakpoint}px){:root{${m}}}`;
+  return `:root{color-scheme:light;${c}${t}${r}${f}${h}${l}}@media (max-width:${layout.mobileBreakpoint}px){:root{${m}}}`;
 }

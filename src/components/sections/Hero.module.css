@@ -1,11 +1,78 @@
 .hero {
   position: relative;
+  /* the sky sits behind everything in the hero (z-index -1) */
+  isolation: isolate;
   height: 100vh;
   min-height: 540px;
   display: grid;
   grid-template-rows: auto 1fr;
   padding-block: 20px 0;
 }
+/* the sky: a pale wash across the top that fades into the paper, with soft blurred clouds, edge to edge.
+   Colour and strength are --hero-sky-* (heroSky in theme.ts). Clouds sit by viewport width and hero height. */
+.sky {
+  position: absolute;
+  z-index: -1;
+  inset: 0 auto;
+  left: 50%;
+  width: 100vw;
+  translate: -50% 0;
+  pointer-events: none;
+}
+/* the wash: a little stronger than the clouds at the same strength */
+.sky::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    var(--hero-sky-tint),
+    color-mix(in srgb, var(--hero-sky-tint) 45%, transparent) 28%,
+    transparent 62%
+  );
+  opacity: calc(var(--hero-sky-strength) * 0.9);
+}
+/* each cloud is blurred as a whole (the filter sits on the parent so it softens the masked shape) */
+.sky i {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  aspect-ratio: 100 / 46;
+  filter: blur(calc(var(--w) * 0.1));
+  opacity: calc(var(--hero-sky-strength) * 0.85);
+  scale: var(--flip, 1) 1;
+}
+.sky i::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--hero-sky-cloud);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 46'%3E%3Cg fill='%23fff'%3E%3Ccircle cx='18' cy='34' r='12'/%3E%3Ccircle cx='33' cy='24' r='16'/%3E%3Ccircle cx='52' cy='18' r='20'/%3E%3Ccircle cx='71' cy='25' r='15'/%3E%3Ccircle cx='85' cy='33' r='11'/%3E%3Crect x='6' y='30' width='88' height='16' rx='8'/%3E%3C/g%3E%3C/svg%3E")
+    center / 100% 100% no-repeat;
+}
+.sky i:nth-child(1) {
+  --x: 4.9vw;
+  --y: 13.3%;
+  --w: 17.4vw;
+}
+.sky i:nth-child(2) {
+  --x: 36.1vw;
+  --y: 23.9%;
+  --w: 10.4vw;
+  --flip: -1;
+}
+.sky i:nth-child(3) {
+  --x: 54.2vw;
+  --y: 10.6%;
+  --w: 14.6vw;
+  --flip: -1;
+}
+.sky i:nth-child(4) {
+  --x: 72.2vw;
+  --y: 21.1%;
+  --w: 9vw;
+}
+
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -167,6 +234,26 @@
 }
 
 @media (max-width: 700px) {
+  /* phones: three clouds between the open-to-work pill and the tags */
+  .sky i:nth-child(1) {
+    --x: -5.1vw;
+    --y: 14.2%;
+    --w: 35.9vw;
+  }
+  .sky i:nth-child(2) {
+    --x: 51.3vw;
+    --y: 10.9%;
+    --w: 30.8vw;
+  }
+  .sky i:nth-child(3) {
+    --x: 67.2vw;
+    --y: 22.5%;
+    --w: 20.5vw;
+    --flip: 1;
+  }
+  .sky i:nth-child(4) {
+    display: none;
+  }
   .intro {
     grid-template-columns: 1fr;
   }

@@ -20,6 +20,6 @@ paths:
   Use results as `{ value, unit }`, and durometer ratings as numbers mapped to tiers in `stack.ts`.
 - UI labels (checkpoint word, banners, button text, column headers) live in `labels` in `config/sections.ts`.
 - `site.url` comes from `NEXT_PUBLIC_SITE_URL`. Keep `.env.example` in sync with the default.
-- **Contact form:** `site.contact.form.endpoint` comes from `NEXT_PUBLIC_CONTACT_ENDPOINT` (JSON POST of name, email,
-  message, e.g. Formspree). Without it the form opens the visitor's email app with the message filled in. Never show
-  "sent" unless the endpoint answered OK.
+- **Contact form:** posts to Web3Forms when `site.contact.form.web3formsKey` is set (from `NEXT_PUBLIC_WEB3FORMS_KEY`;
+  JSON of access_key, subject, from_name, name, email, message). Without it the form opens the visitor's email app
+  with the message filled in. Never show "sent" unless Web3Forms answered `success: true`.

@@ -43,7 +43,9 @@ export const site: SiteConfig = {
     tag: "RG '26",
     form: {
       title: "Send a message",
-      endpoint: process.env.NEXT_PUBLIC_CONTACT_ENDPOINT || undefined,
+      web3formsKey: process.env.NEXT_PUBLIC_WEB3FORMS_KEY || undefined,
+      endpoint: "https://api.web3forms.com/submit",
+      fromName: "Portfolio contact form",
       fields: {
         name: { label: "Name", placeholder: "Your name", error: "Name is required" },
         email: { label: "Email", placeholder: "you@company.com", error: "Enter an email I can reply to" },

@@ -21,17 +21,21 @@ export interface FormField {
 export interface ContactForm {
   title: string;
   /**
-   * Where the form posts (JSON: name, email, message), e.g. a Formspree or Web3Forms endpoint. Without one the
-   * form opens the visitor's email app with the message filled in.
+   * Web3Forms access key: messages are posted to Web3Forms, which emails them to you (the key is public by design).
+   * Without one the form opens the visitor's email app with the message filled in.
    */
-  endpoint?: string;
+  web3formsKey?: string;
+  /** the Web3Forms submit URL */
+  endpoint: string;
+  /** sender name on the emails Web3Forms sends you */
+  fromName: string;
   fields: { name: FormField; email: FormField; message: FormField };
   send: string;
   sending: string;
   sent: string;
   /** shown when posting fails; the email address is appended */
   failed: string;
-  /** shown when there is no endpoint and the email app is opened instead */
+  /** shown when there is no access key and the email app is opened instead */
   opening: string;
   /** email subject; {name} is replaced */
   subject: string;

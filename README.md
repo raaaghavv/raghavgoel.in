@@ -79,6 +79,6 @@ With `prefers-reduced-motion`, there is no scroll lock or particles, and Lenis i
 
 Set `NEXT_PUBLIC_SITE_URL` (see `.env.example`) and deploy `out/` to any static host: Vercel, Netlify, Cloudflare Pages or S3.
 
-The contact form needs no server. Set `NEXT_PUBLIC_CONTACT_ENDPOINT` to a form service endpoint (for example
-Formspree or Web3Forms; it receives a JSON POST of `name`, `email` and `message`) and messages land in your inbox.
-Leave it empty and the form opens the visitor's email app with the message filled in.
+The contact form needs no server. Set `NEXT_PUBLIC_WEB3FORMS_KEY` to a [Web3Forms](https://web3forms.com) access key
+and messages land in your inbox, with the visitor's address as reply-to. It's read at build time, so set it on your
+host and redeploy. Leave it empty and the form opens the visitor's email app with the message filled in.

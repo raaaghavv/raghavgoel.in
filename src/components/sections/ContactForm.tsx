@@ -13,8 +13,9 @@ const valid: Record<Name, (v: string) => boolean> = {
 };
 
 /**
- * The "Send a message" form. With `contact.form.endpoint` set it posts JSON there (Formspree-style); without one it
- * opens the visitor's email app with the message filled in, so it works on the static site with no backend.
+ * The "Send a message" form. With a Web3Forms access key (`contact.form.web3formsKey`) it posts the message to
+ * Web3Forms, which emails it to you with the visitor's address as reply-to; without one it opens the visitor's email
+ * app with the message filled in. Either way the static site needs no backend.
  */
 export default function ContactForm() {
   const F = site.contact.form;
@@ -44,8 +45,8 @@ export default function ContactForm() {
     }
     if (new FormData(form).get("company")) return; // honeypot: a bot filled the hidden field
 
-    if (!F.endpoint) {
-      const subject = F.subject.replace("{name}", values.name.trim());
+    const subject = F.subject.replace("{name}", values.name.trim());
+    if (!F.web3formsKey) {
       const body = `${values.message.trim()}\n\n${values.name.trim()} · ${values.email.trim()}`;
       window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       setStatus({ text: F.opening, tone: "ok" });
@@ -57,9 +58,11 @@ export default function ContactForm() {
       const res = await fetch(F.endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify({ access_key: F.web3formsKey, subject, from_name: F.fromName, ...values }),
       });
-      if (!res.ok) throw new Error(String(res.status));
+      // Web3Forms answers { success, message }; only a success counts as sent
+      const out = (await res.json().catch(() => null)) as { success?: boolean } | null;
+      if (!res.ok || !out?.success) throw new Error(String(res.status));
       form.reset();
       setStatus({ text: F.sent, tone: "ok" });
     } catch {

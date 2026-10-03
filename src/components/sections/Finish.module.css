@@ -172,24 +172,44 @@
   justify-content: space-between;
   pointer-events: none;
 }
+/* a lit bulb; the glow (::before) and the unlit glass (::after) are layers that only change opacity, so the
+   chase runs on the compositor instead of repainting every bulb */
 .bulbs i {
+  position: relative;
   width: 16px;
   aspect-ratio: 1;
   border-radius: 50%;
   border: 2px solid var(--ink);
   background: radial-gradient(circle at 40% 35%, #fff6d8, var(--park-bulb) 55%, #d9a63a);
+}
+.bulbs i::before,
+.bulbs i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.bulbs i::before {
   box-shadow: 0 0 10px 2px color-mix(in srgb, var(--park-bulb) 70%, transparent);
+  animation: glow 1.6s steps(1) infinite;
 }
-.bulbs i:nth-child(odd) {
-  animation: chase 1.6s steps(1) infinite;
+.bulbs i::after {
+  background: #8a7448;
+  opacity: 0;
+  animation: unlit 1.6s steps(1) infinite;
 }
-.bulbs i:nth-child(even) {
-  animation: chase 1.6s steps(1) 0.8s infinite;
+.bulbs i:nth-child(even)::before,
+.bulbs i:nth-child(even)::after {
+  animation-delay: 0.8s;
 }
-@keyframes chase {
+@keyframes glow {
   50% {
-    background: #8a7448;
-    box-shadow: none;
+    opacity: 0;
+  }
+}
+@keyframes unlit {
+  50% {
+    opacity: 1;
   }
 }
 .rule {
@@ -545,7 +565,8 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .bulbs i {
+  .bulbs i::before,
+  .bulbs i::after {
     animation: none;
   }
 }

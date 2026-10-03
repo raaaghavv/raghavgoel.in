@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import type { Project } from "@/types/content";
 import { labels } from "@/config/sections";
 import s from "./Projects.module.css";
@@ -8,6 +8,7 @@ import s from "./Projects.module.css";
 /** A skateboard deck: graphic on the front, build notes on the grip-tape back. */
 export default function Deck({ project: p }: { project: Project }) {
   const [flipped, setFlipped] = useState(false);
+  const hint = useId();
   const titleSize = Math.min(54, Math.floor(330 / p.name.length));
   const [kProblem, kBuilt, kResult] = labels.deckResult;
   return (
@@ -20,8 +21,12 @@ export default function Deck({ project: p }: { project: Project }) {
         className={s.flip}
         onClick={() => setFlipped((f) => !f)}
         aria-pressed={flipped}
-        aria-label={`${p.name}: ${p.tag}. ${labels.flipHint}`}
+        aria-describedby={hint}
       >
+        {/* the button is named by the face that's showing (so voice control matches what's on screen); this is the hint */}
+        <span id={hint} className="sr-only">
+          {labels.flipHint}
+        </span>
         <span className={s.inner}>
           <span className={`${s.face} ${s.front}`} data-graphic={p.graphic} aria-hidden={flipped}>
             <span className={`${s.bolts} ${s.top}`} />

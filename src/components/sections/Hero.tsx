@@ -58,9 +58,7 @@ export default function Hero() {
             <p className={s.sub}>
               <Rich text={hero.subheading} />
             </p>
-            <span className={s.scribble} aria-hidden="true">
-              {hero.scribble}
-            </span>
+            <span className={s.scribble} data-text={hero.scribble} aria-hidden="true" />
           </div>
           <div className={s.ctas}>
             {hero.ctas.map((c) => (

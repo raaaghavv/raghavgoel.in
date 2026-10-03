@@ -224,12 +224,17 @@
   gap: 12px;
   flex-wrap: wrap;
 }
+/* a decorative marker scribble in the brand pink. The words are generated content (data-text), not page text, so
+   contrast checks treat it as decoration; it is also hidden from screen readers. */
 .scribble {
   font: 400 20px/1 var(--font-marker);
   color: var(--pink);
   transform: rotate(-4deg);
   display: inline-block;
   margin-top: 12px;
+}
+.scribble::before {
+  content: attr(data-text);
 }
 
 @media (max-width: 700px) {

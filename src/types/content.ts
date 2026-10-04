@@ -91,19 +91,37 @@ export interface Checkpoint {
   blurb?: string;
 }
 
-export type DeckGraphic = "dot" | "stripes" | "checker" | "star" | "halftone" | "split";
+/** cover art drawn on a deck's front (DeckArt.tsx) */
+export type DeckArt = "upload" | "stream" | "monitor" | "lyrics" | "terminal" | "masks";
 
 export interface Project {
   name: string;
-  graphic: DeckGraphic;
+  art: DeckArt;
+  /** title lines on the front; defaults to the name on one line */
+  lines?: string[];
+  /** deck paint: background, title and its offset shadow, the bottom band and its text, and the bolts */
+  colors: {
+    bg: ThemeColor;
+    title: ThemeColor;
+    shadow: ThemeColor;
+    band: ThemeColor;
+    bandText: ThemeColor;
+    bolt?: ThemeColor;
+  };
   meta: string;
   tag: string;
+  /** small muted label under the title on the back, e.g. "File transfer" */
+  category: string;
   problem: string;
   built: string;
   result: { value: string; unit: string };
   stack: string[];
-  live?: boolean;
-  href?: string;
+  /** deployed app: shows the LIVE sticker and a "Live" link */
+  live?: string;
+  /** demo video, for projects without a deployed app */
+  demo?: string;
+  /** source code */
+  repo: string;
 }
 
 export interface DurometerTier {

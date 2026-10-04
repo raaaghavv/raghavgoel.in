@@ -16,6 +16,15 @@ export const motion = {
     /** the name is hidden from first paint while the engine loads; past this it shows without the roll-in */
     waitFor: 4000,
   },
+  /** an opened project deck: flies from the row to the centre, grows to fit and flips to its back */
+  deckSpotlight: {
+    duration: 650,
+    easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
+    /** never larger than this */
+    maxScale: 1.6,
+    /** share of the screen's height (or width) the deck may fill */
+    fill: 0.88,
+  },
   stunt: {
     toRail: 1250,
     toHero: 1000,

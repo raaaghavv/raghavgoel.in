@@ -69,7 +69,7 @@ export function llmsTxt() {
       .map((c) => c.title)
       .join(", ")}`,
     `- [Full profile for LLMs](${site.url}/llms-full.txt): every project, skill, role and certificate as markdown`,
-    `- [Résumé (PDF)](${site.url}${site.resume.href})`,
+    `- [Résumé](${site.resume.href})`,
     "",
     `## ${sec("projects").title}`,
     ...projects.map((p) => `- ${p.name}: ${p.tag}. ${p.result.value} ${p.result.unit}.`),
@@ -97,13 +97,16 @@ export function llmsFullTxt() {
   out.push("## Projects", "");
   projects.forEach((p) => {
     out.push(
-      `### ${p.name} (${p.meta})${p.live ? " — live" : ""}`,
+      `### ${p.name} (${p.meta})`,
       "",
       `- ${p.tag}`,
       `- Problem: ${p.problem}`,
       `- Built: ${p.built}`,
       `- Result: ${p.result.value}, ${p.result.unit}`,
       `- Stack: ${p.stack.join(", ")}`,
+      ...(p.live ? [`- Live: ${p.live}`] : []),
+      ...(p.demo ? [`- Demo: ${p.demo}`] : []),
+      `- Code: ${p.repo}`,
       "",
     );
   });

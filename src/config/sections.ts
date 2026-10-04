@@ -12,7 +12,7 @@ export const checkpoints: Checkpoint[] = [
     title: "Projects",
     alias: "the decks",
     blurb:
-      "Four systems I built at ManufApp and two side projects running live. Tap a deck to flip it: the problem, what I built, and the result.",
+      "Things I built on my own time, most of them running live. Tap a deck to flip it: the problem, what I built, the result, and links to try it and read the code.",
   },
   {
     id: "stack",
@@ -52,7 +52,10 @@ export const labels = {
   experienceColumns: ["When", "Where", "What landed"],
   now: "Now",
   rangeSeparator: " — ",
-  flipHint: "Flip for build notes",
+  flipHint: "Open the build notes",
+  deckClose: "Close",
+  /** deck back-side links */
+  deckLinks: { live: "Live", demo: "Demo", repo: "Code" },
   deckResult: ["Problem", "Built", "Result"],
   cardPrev: "Previous card",
   cardNext: "Next card",

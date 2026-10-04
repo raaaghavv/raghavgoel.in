@@ -128,8 +128,12 @@ export function createStunt(ctx: RideContext, rail: Rail, hooks: { finishIntro: 
     fn: (e: WindowEventMap[K]) => void,
     opts?: AddEventListenerOptions,
   ) => {
-    window.addEventListener(type, fn, opts);
-    off.push(() => window.removeEventListener(type, fn, opts));
+    // a modal over the page (an opened project deck, html[data-modal]) owns input: no ride moves underneath it
+    const guarded = (e: WindowEventMap[K]) => {
+      if (!document.documentElement.hasAttribute("data-modal")) fn(e);
+    };
+    window.addEventListener(type, guarded, opts);
+    off.push(() => window.removeEventListener(type, guarded, opts));
   };
 
   if (!ctx.simple) {

@@ -33,9 +33,34 @@
 }
 
 .deck {
+  position: relative;
   width: var(--deck-w);
   height: 560px;
   perspective: 1400px;
+}
+/* project links: a row at the foot of the back face; buttons share it, so a lone CODE spans it */
+.back > .links {
+  display: flex;
+  gap: 6px;
+  margin: 10px 6px 0;
+}
+.links a {
+  flex: 1;
+  text-align: center;
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--acid);
+  border: 2px solid var(--ink);
+  border-radius: 99px;
+  padding: 7px 8px;
+  white-space: nowrap;
+}
+.links a:hover,
+.links a:focus-visible {
+  background: var(--pink);
 }
 .flip {
   display: block;
@@ -60,8 +85,71 @@
 .deck[data-nudge] .inner {
   transform: rotate(-3deg) translateY(-8px);
 }
-.deck[data-flipped] .inner {
+/* the deck in the row is lifted out while it's open (Deck flies a copy to the spotlight) */
+.deck[data-lifted] .flip {
+  visibility: hidden;
+}
+
+/* ---------- spotlight: the opened deck, centred, enlarged and flipped to its back ---------- */
+.spotlight {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: hidden;
+}
+.spotlight::backdrop {
+  background: rgb(18 18 18 / 0.55);
+  backdrop-filter: blur(3px);
+  animation: spot-fade 0.35s ease-out;
+  transition: opacity 0.45s;
+}
+.spotlight[data-closing]::backdrop {
+  opacity: 0;
+}
+@keyframes spot-fade {
+  from {
+    opacity: 0;
+  }
+}
+/* deck-sized and centred; Deck animates its transform from the row position to scale(fit) */
+.spot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 184px;
+  height: 560px;
+  margin: -280px 0 0 -92px;
+  perspective: 1400px;
+}
+.spot[data-flipped] .inner {
   transform: rotateY(180deg);
+}
+.spotClose {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  font: 600 12px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  box-shadow: var(--shadow);
+  padding: 10px 14px;
+  cursor: pointer;
+}
+.spotlight[data-closing] .spotClose {
+  opacity: 0;
+}
+:global(html[data-modal]) {
+  overflow: hidden;
 }
 .face {
   display: block;
@@ -75,171 +163,124 @@
   box-shadow: 6px 6px 0 var(--ink);
 }
 
-/* ---------- front graphics ---------- */
+/* ---------- front: cover art ---------- */
+/* title up top, the project's illustration (DeckArt), then the tag on a solid band. Paint comes from the
+   project's colors (--deck-*), set inline by Deck. */
 .front {
-  display: grid;
-  place-items: center;
+  background: var(--deck-bg);
 }
-.front::before {
-  content: "";
+/* the title sits centred in the space between the top bolts and the art, whatever its size or line count */
+.title {
   position: absolute;
-}
-.name {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
+  left: 12px;
+  right: 12px;
+  top: 84px;
+  height: 106px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
   font-family: var(--font-display);
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0.02em;
-  position: relative;
-  z-index: 2;
+  line-height: 0.9;
+  color: var(--deck-title);
+  text-shadow: 2px 2px 0 var(--deck-shadow);
+}
+.title > span {
+  display: block;
   white-space: nowrap;
 }
-.spec {
+.art {
   position: absolute;
-  bottom: 118px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font: 600 10px/1.35 var(--font-mono);
-  letter-spacing: 0.08em;
-  z-index: 2;
-  padding: 0 22px;
+  left: 18px;
+  top: 198px;
+  width: calc(100% - 36px);
+  height: 178px;
+  overflow: visible;
 }
+/* the same pill as the hero's "open to work" */
 .live {
   position: absolute;
-  top: 128px;
-  right: 18px;
+  top: 382px;
+  right: 16px;
   z-index: 3;
-  font: 400 12px/1 var(--font-display);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  background: var(--ink);
+  color: var(--acid);
+  border-radius: 99px;
+  padding: 6px 9px;
+}
+.live::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
   background: var(--acid);
-  color: var(--ink);
-  border: 2px solid var(--ink);
-  padding: 4px 6px;
-  transform: rotate(10deg);
+}
+.band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 414px;
+  height: 64px;
+  display: grid;
+  place-content: center;
+  gap: 6px;
+  padding: 0 20px;
+  text-align: center;
+  background: var(--deck-band);
+  color: var(--deck-band-text);
+  border-block: 3px solid var(--ink);
+}
+.tag {
+  font: 600 14.5px/1.25 var(--font-body);
+  text-wrap: balance;
+  font-stretch: 95%;
 }
 .bolts {
   position: absolute;
   left: 50%;
-  width: 30px;
-  height: 40px;
+  width: 22px;
+  height: 22px;
   transform: translateX(-50%);
   z-index: 3;
-  background: radial-gradient(circle, var(--bolt, var(--ink)) 3px, transparent 3.6px) 0 0 / 15px 20px;
+  background: radial-gradient(circle, var(--bolt, var(--ink)) 3px, transparent 3.6px) 0 0 / 11px 11px;
 }
 .top {
-  top: 70px;
+  top: 58px;
 }
 .bottom {
-  bottom: 70px;
+  bottom: 50px;
 }
 
-.front[data-graphic="dot"] {
-  background: var(--pink);
-}
-.front[data-graphic="dot"]::before {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background: var(--acid);
-  border: 3px solid var(--ink);
-  top: 46%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.front[data-graphic="stripes"] {
-  background: var(--blue);
-  color: var(--acid);
-}
-.front[data-graphic="stripes"]::before {
-  inset: 0;
-  background: repeating-linear-gradient(-35deg, transparent 0 22px, rgb(255 255 255 / 0.9) 22px 34px);
-  clip-path: polygon(0 55%, 100% 35%, 100% 100%, 0 100%);
-}
-.front[data-graphic="stripes"] .spec {
-  color: var(--white);
-}
-
-.front[data-graphic="checker"] {
-  background: var(--acid);
-}
-.front[data-graphic="checker"]::before {
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 40%;
-  background: conic-gradient(var(--ink) 25%, transparent 0 50%, var(--ink) 0 75%, transparent 0) 0 0 / 36px 36px;
-}
-.front[data-graphic="checker"] .name {
-  text-shadow: 4px 4px 0 var(--pink);
-}
-.front[data-graphic="checker"] .spec {
-  background: var(--acid);
-  padding-block: 4px;
-}
-
-.front[data-graphic="star"] {
-  background: var(--ink);
-  color: var(--paper);
-  --bolt: var(--paper);
-}
-.front[data-graphic="star"]::before {
-  width: 170px;
-  height: 170px;
-  top: 42%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(8deg);
-  background: var(--pink);
-  clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-}
-.front[data-graphic="star"] .name {
-  color: var(--acid);
-}
-
-.front[data-graphic="halftone"] {
-  background: var(--white);
-}
-.front[data-graphic="halftone"]::before {
-  width: 230px;
-  height: 230px;
-  top: 48%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(var(--ink) 2.2px, transparent 2.6px) 0 0 / 9px 9px;
-  -webkit-mask-image: radial-gradient(circle, #000 20%, transparent 70%);
-  mask-image: radial-gradient(circle, #000 20%, transparent 70%);
-}
-.front[data-graphic="halftone"] .name {
-  color: var(--pink);
-  -webkit-text-stroke: 2px var(--ink);
-}
-
-.front[data-graphic="split"] {
-  background: linear-gradient(160deg, var(--pink) 0 50%, var(--blue) 50% 100%);
-  color: var(--white);
-}
-.front[data-graphic="split"] .name {
-  text-shadow: 4px 4px 0 var(--ink);
-}
-
-/* ---------- grip-tape back ---------- */
 .back {
   transform: rotateY(180deg);
   color: #f2f2ee;
-  padding: 66px 16px;
+  padding: 64px 16px 34px;
   display: flex;
   flex-direction: column;
-  gap: 11px;
+  gap: 14px;
+  /* grip texture kept faint: a surface detail, not something to read through */
   background:
-    radial-gradient(rgb(255 255 255 / 0.09) 0.7px, transparent 1px) 0 0 / 3px 3px,
+    radial-gradient(rgb(255 255 255 / 0.04) 0.7px, transparent 1px) 0 0 / 3px 3px,
     var(--grip);
 }
+/* title smaller than the result, so the eye goes project -> story -> result */
 .backTitle {
   display: block;
-  font: 400 19px/1 var(--font-display);
-  color: var(--acid);
+  font: 400 18px/1 var(--font-display);
+  color: var(--white);
+}
+.category {
+  display: block;
+  margin-top: 5px;
+  font: 600 9px/1 var(--font-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(242 242 238 / 0.55);
 }
 .k {
   font: 600 10px/1 var(--font-mono);
@@ -258,12 +299,17 @@
   margin-top: 3px;
   font: 400 12px/1.42 var(--font-body);
 }
+/* the result is the focal point: a little more room above it, big acid headline, short line under */
+.back > .result {
+  margin-top: 4px;
+}
 .num {
   display: block;
   font: 400 28px/1 var(--font-display);
   color: var(--acid);
   font-variant-numeric: tabular-nums;
-  margin-top: 3px;
+  text-wrap: balance;
+  margin-top: 4px;
 }
 .back > .chips {
   display: flex;
@@ -272,8 +318,8 @@
   margin-top: auto;
 }
 .chips span {
-  font: 600 10px/1 var(--font-mono);
-  border: 1px solid #f2f2ee;
-  padding: 4px 6px;
+  font: 600 9px/1 var(--font-mono);
+  border: 1px solid rgb(242 242 238 / 0.7);
+  padding: 3px 6px;
   border-radius: 99px;
 }

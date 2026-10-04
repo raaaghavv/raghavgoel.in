@@ -7,13 +7,13 @@ export const site: SiteConfig = {
   name: { first: "Raghav", last: "Goel", full: "Raghav Goel" },
   role: "Full-stack engineer",
   description:
-    "Raghav Goel is a full-stack engineer at ManufApp building AI agents, real-time systems and the cloud infrastructure behind them.",
+    "Raghav Goel is a full-stack engineer at ManufApp, building the AI agents that triage support tickets and the real-time, PDF and reporting systems behind a manufacturing ERP.",
   url,
   locale: "en_IN",
   email,
   location: "Greater Noida, India",
   timezone: { label: "UTC +5:30", iana: "Asia/Kolkata" },
-  availability: "Open to work",
+  availability: "Open to SWE, AI & FDE roles",
   employer: { name: "ManufApp" },
   education: {
     school: "Galgotias College of Engineering and Technology",
@@ -22,9 +22,9 @@ export const site: SiteConfig = {
     to: "2025",
   },
   hero: {
-    tags: ["Full-stack engineer", "Agentic orchestration & systems", "Cloud & DevOps"],
+    tags: ["Full-stack engineer", "AI agents in production", "Real-time & cloud"],
     subheading:
-      "I build AI products end to end: **the model calls, the product around them, and the infra** that keeps them up at 3am.",
+      "I build AI products end to end: **the model calls, the product around them, and the infra** that keeps them up at 3am. At ManufApp, my agents triage **500+ support tickets a month**.",
     scribble: "scroll to drop in ↓",
     ctas: [
       { label: "See the projects", href: "#projects", primary: true },
@@ -32,7 +32,8 @@ export const site: SiteConfig = {
     ],
   },
   contact: {
-    pitch: "Building with AI agents or real-time systems? Tell me what you're working on.",
+    pitch:
+      "Hiring for SWE, full-stack, AI or forward-deployed roles, or building with agents? Tell me what you're working on.",
     reachTitle: "Reach me",
     emailLabel: "Email",
     copyLabel: "Copy",
@@ -66,8 +67,8 @@ export const site: SiteConfig = {
   ],
   resume: {
     title: "Résumé",
-    href: "https://drive.google.com/drive/folders/176zwefbsG_pOOBEzZ9s9EnP0yeSp3EyU?usp=sharing",
-    label: "Google Drive",
+    href: "https://drive.google.com/file/d/1BQYDqYr-dDf28rjuCAksqz75eSHAKVA2/view",
+    label: "View PDF",
   },
   footnote: "Skater, skates and every graphic on this page are drawn in code.",
 };

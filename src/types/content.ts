@@ -92,7 +92,7 @@ export interface Checkpoint {
 }
 
 /** cover art drawn on a deck's front (DeckArt.tsx) */
-export type DeckArt = "upload" | "stream" | "monitor" | "lyrics" | "terminal" | "masks";
+export type DeckArt = "upload" | "stream" | "monitor" | "lyrics" | "site";
 
 export interface Project {
   name: string;

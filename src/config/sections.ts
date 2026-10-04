@@ -12,7 +12,7 @@ export const checkpoints: Checkpoint[] = [
     title: "Projects",
     alias: "the decks",
     blurb:
-      "Things I built on my own time, most of them running live. Tap a deck to flip it: the problem, what I built, the result, and links to try it and read the code.",
+      "Things I built on my own time, this site included. Open a deck for the problem, what I built, the result, and links to try it and read the code.",
   },
   {
     id: "stack",

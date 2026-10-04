@@ -5,7 +5,6 @@ import type { DeckArt as Art } from "@/types/content";
 const ink = "var(--ink)";
 const pink = "var(--pink)";
 const acid = "var(--acid)";
-const blue = "var(--blue)";
 const white = "var(--white)";
 const paper = "var(--paper)";
 /* greys mixed from the palette for screens, grooves and dimmed text */
@@ -139,74 +138,114 @@ function Lyrics() {
   );
 }
 
-/** AI CLI: a terminal running the clone, with the copied page popping out behind it */
-function Terminal() {
+/* the rider's own paint (theme.ts riderColors), so the cover matches the skater on the page */
+const rider = (k: string) => `var(--rider-${k})`;
+
+/** a limb: an ink outline with the colour laid inside it */
+function Limb({ d, color, w }: { d: string; color: string; w: number }) {
+  const round = { fill: "none", strokeLinecap: "round", strokeLinejoin: "round" } as const;
   return (
     <>
-      <g transform="rotate(5 110 70)">
-        <rect x="70" y="10" width="90" height="72" rx="6" fill={white} {...line} />
-        <rect x="70" y="10" width="90" height="14" rx="6" fill={pink} {...line} />
-        <rect x="80" y="34" width="70" height="10" fill={ink} />
-        <rect x="80" y="50" width="32" height="24" fill={blue} />
-        <rect x="118" y="50" width="32" height="6" fill={ink} />
-        <rect x="118" y="62" width="24" height="6" fill={ink} />
-      </g>
-      <rect x="6" y="74" width="150" height="108" rx="8" fill={ink} {...line} />
-      <g fill={white}>
-        <circle cx="18" cy="86" r="3" />
-        <circle cx="28" cy="86" r="3" />
-        <circle cx="38" cy="86" r="3" />
-      </g>
-      <g style={mono} fontSize="10">
-        <text x="16" y="112" fill={acid}>
-          &gt; clone the site
-        </text>
-        <text x="16" y="127" fill={acid}>
-          {"  example.com"}
-        </text>
-        <text x="16" y="146" fill={white}>
-          ✓ assets ✓ paths
-        </text>
-        <text x="16" y="166" fill={pink}>
-          &gt;
-        </text>
-      </g>
-      <rect x="28" y="157" width="8" height="12" fill={acid} />
+      <path d={d} {...round} stroke={ink} strokeWidth={w + 6} />
+      <path d={d} {...round} stroke={color} strokeWidth={w} />
     </>
   );
 }
 
-/** Persona AI: two masks (two voices) and a typing bubble */
-function Masks() {
+/** a roller skate with its ankle at the origin, toe to the right */
+function Skate({ x, y, tilt, far }: { x: number; y: number; tilt: number; far?: boolean }) {
+  const wheel = far ? rider("far-wheel") : rider("wheel");
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${tilt})`} {...line}>
+      <path d="M-7 -10 H3 Q14 -8 14 0 V3 H-7 Z" fill={far ? rider("far-pink") : rider("pink")} />
+      <rect x="-9" y="3" width="25" height="4" fill={rider("plate")} strokeWidth={2} />
+      <circle cx="-4" cy="11" r="4.5" fill={wheel} strokeWidth={2.5} />
+      <circle cx="11" cy="11" r="4.5" fill={wheel} strokeWidth={2.5} />
+    </g>
+  );
+}
+
+/** This site: the rider jumping the course rail (ink, with pink checkpoints) under a cyan sky */
+function Site() {
   return (
     <>
+      <g fill={white}>
+        <circle cx="18" cy="30" r="9" />
+        <circle cx="30" cy="25" r="12" />
+        <circle cx="42" cy="31" r="8" />
+        <circle cx="140" cy="118" r="8" />
+        <circle cx="151" cy="113" r="10" />
+        <circle cx="161" cy="119" r="7" />
+      </g>
+      <g stroke={ink} strokeWidth="3" strokeLinecap="round">
+        <path d="M22 80 H42 M14 92 H38 M24 104 H44" />
+      </g>
+
+      {/* far side: back arm, back leg and skate */}
+      <Limb d="M80 66 L66 52 L58 36" color={rider("far-acid")} w={8} />
+      <circle cx="57" cy="33" r="5" fill={rider("far-skin")} {...line} strokeWidth={2.5} />
+      <Limb d="M82 98 L84 120 L70 130" color={rider("far-blue")} w={10} />
+      <Skate x={66} y={132} tilt={-12} far />
+
+      {/* body: hood, hoodie with the 01 print, head and curls */}
+      <path d="M80 50 Q70 62 79 72 L90 60 Z" fill={rider("acid-shade")} {...line} />
+      <path d="M86 56 Q104 53 109 66 L103 99 Q88 104 73 97 L77 66 Q79 58 86 56 Z" fill={rider("acid")} {...line} />
+      <path d="M75 90 Q89 96 104 92" fill="none" stroke={ink} strokeWidth="2" />
+      <text
+        x="83"
+        y="86"
+        fontFamily="var(--font-display)"
+        fontSize="12"
+        fill={rider("pink")}
+        transform="rotate(-8 90 80)"
+      >
+        01
+      </text>
+      <circle cx="98" cy="42" r="14" fill={rider("skin")} {...line} />
+      <g>
+        <g fill={ink}>
+          <circle cx="87" cy="33" r="8.5" />
+          <circle cx="95" cy="27" r="8.5" />
+          <circle cx="105" cy="28" r="7.5" />
+          <circle cx="112" cy="34" r="5.5" />
+          <circle cx="84" cy="42" r="7.5" />
+        </g>
+        <g fill={rider("hair")}>
+          <circle cx="87" cy="33" r="7" />
+          <circle cx="95" cy="27" r="7" />
+          <circle cx="105" cy="28" r="6" />
+          <circle cx="112" cy="34" r="4" />
+          <circle cx="84" cy="42" r="6" />
+        </g>
+      </g>
+      <g fill={white} stroke={ink} strokeWidth="2">
+        <circle cx="99" cy="44" r="4.2" />
+        <circle cx="109" cy="43" r="4.2" />
+      </g>
+      <path d="M103.2 43.6 h1.6" stroke={ink} strokeWidth="2" />
+      <g fill={rider("iris")}>
+        <circle cx="100" cy="44" r="1.6" />
+        <circle cx="110" cy="43" r="1.6" />
+      </g>
+      <path d="M102 52 q4 3 8 -1" fill="none" stroke={ink} strokeWidth="2" strokeLinecap="round" />
+
+      {/* near side: front leg tucked up, its skate, and the front arm reaching forward */}
+      <Limb d="M92 98 L114 106 L106 126" color={rider("blue")} w={10} />
+      <Skate x={104} y={130} tilt={8} />
+      <Limb d="M102 66 L122 76 L136 64" color={rider("acid")} w={8} />
+      <circle cx="138" cy="62" r="5" fill={rider("skin")} {...line} strokeWidth={2.5} />
+
+      {/* the rail: the same ink line and pink checkpoints as the page's scrollbar */}
       <g {...line}>
-        <path
-          d="M14 40 Q14 22 40 22 H74 Q90 22 90 40 V86 Q90 124 52 128 Q14 124 14 86 Z"
-          fill={white}
-          transform="rotate(-10 52 75)"
-        />
-        <path
-          d="M78 64 Q78 46 104 46 H138 Q154 46 154 64 V110 Q154 148 116 152 Q78 148 78 110 Z"
-          fill={pink}
-          transform="rotate(10 116 99)"
-        />
+        <rect x="30" y="168" width="6" height="32" fill={shade(30)} />
+        <rect x="128" y="168" width="6" height="32" fill={shade(30)} />
+        <rect x="8" y="162" width="152" height="8" rx="4" fill={ink} />
       </g>
-      <g fill={ink}>
-        <path d="M30 62 q8 -8 16 0 q-8 4 -16 0Z M56 58 q8 -8 16 0 q-8 4 -16 0Z" transform="rotate(-10 52 75)" />
-        <path d="M36 92 q16 16 32 0 q-16 6 -32 0Z" transform="rotate(-10 52 75)" />
-        <path d="M96 88 q8 8 16 0 q-8 -4 -16 0Z M122 90 q8 8 16 0 q-8 -4 -16 0Z" transform="rotate(10 116 99)" />
-        <path d="M100 128 q16 -14 32 0 q-16 -5 -32 0Z" transform="rotate(10 116 99)" />
-      </g>
-      <path
-        d="M18 158 h62 a8 8 0 0 1 8 8 v12 a8 8 0 0 1 -8 8 h-40 l-12 10 v-10 h-10 a8 8 0 0 1 -8 -8 v-12 a8 8 0 0 1 8 -8Z"
-        fill={acid}
-        {...line}
-      />
-      <g fill={ink}>
-        <circle cx="38" cy="172" r="3" />
-        <circle cx="50" cy="172" r="3" />
-        <circle cx="62" cy="172" r="3" />
+      <g fill={pink} stroke={paper} strokeWidth="1.5">
+        <circle cx="26" cy="166" r="3.5" />
+        <circle cx="66" cy="166" r="3.5" />
+        <circle cx="104" cy="166" r="3.5" />
+        <circle cx="142" cy="166" r="3.5" />
       </g>
     </>
   );
@@ -217,8 +256,7 @@ const arts: Record<Art, () => React.JSX.Element> = {
   stream: Stream,
   monitor: Monitor,
   lyrics: Lyrics,
-  terminal: Terminal,
-  masks: Masks,
+  site: Site,
 };
 
 export default function DeckArt({ art, className }: { art: Art; className?: string }) {

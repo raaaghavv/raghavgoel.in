@@ -57,6 +57,7 @@ export const labels = {
   /** deck back-side links */
   deckLinks: { live: "Live", demo: "Demo", repo: "Code" },
   deckResult: ["Problem", "Built", "Result"],
-  cardPrev: "Previous card",
-  cardNext: "Next card",
+  binderPrev: "Previous page",
+  binderNext: "Next page",
+  binderPage: "Page",
 };

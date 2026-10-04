@@ -151,16 +151,13 @@ export const motion = {
     /** one foil sweep, ms (passed to CSS as --shine-ms) */
     duration: 1000,
   },
-  cardDeck: {
-    /** phones: each card behind the top one sits this much further right (px), down (px) and turned (deg) */
-    fan: { x: 8, y: 4, rotate: 1.3 },
-    /** a swipe past this many px, or a flick faster than flickSpeed px/ms, changes the card */
-    swipeAt: 70,
-    flickSpeed: 0.45,
-    /** the swiped card flies off this long before it tucks in at the back */
-    toss: 260,
-    /** card move transition (passed to CSS as --deck-ms) */
-    settle: 460,
+  binder: {
+    /** narrow screens: a page turn, ms (passed to CSS as --flip-ms) */
+    flip: 700,
+    /** dragging a page by its corner: a full turn takes this share of the page's height */
+    dragSpan: 0.8,
+    /** let go past this share of the turn and the page finishes turning; earlier, it falls back */
+    turnAt: 0.4,
   },
   park: {
     /** inside once this fraction of the viewport into view, from the bottom or top edge */

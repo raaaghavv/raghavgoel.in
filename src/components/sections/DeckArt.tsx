@@ -158,7 +158,7 @@ const JUMP = full({
 /** where the rider sits on the cover: the lowest wheel at (x, y), at `scale` cover units per rider unit */
 const RIDER_AT = { x: 80, y: 140, scale: 0.42 };
 
-/** This site: the page's own rider (the same art and rig), jumping the course rail under a cyan sky */
+/** raghavgoel.in (this site): the page's own rider (the same art and rig), jumping the course rail under a cyan sky */
 function Site() {
   const tag = useId().replace(/\W/g, "");
   const rider = useMemo(() => riderMarkup(JUMP, tag, 2.4 / RIDER_AT.scale, true), [tag]);

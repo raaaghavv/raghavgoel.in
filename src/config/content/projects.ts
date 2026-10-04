@@ -5,16 +5,16 @@ const gh = (repo: string) => `https://github.com/raaaghavv/${repo}`;
 
 export const projects: Project[] = [
   {
-    name: "THIS SITE",
+    name: "raghavgoel.in",
     art: "site",
-    lines: ["THIS", "SITE"],
+    lines: ["RAGHAV", "GOEL.in"],
     colors: { bg: "cyan", title: "ink", shadow: "pink", band: "ink", bandText: "paper" },
     meta: "Oct 2026",
     tag: "A portfolio you ride through",
     category: "Interactive site",
     problem: "Developer portfolios all look like the same template.",
     built:
-      "A skater drawn in SVG and posed by a hand-written 2D rig rides a scroll-driven course; every graphic is code.",
+      "The skate theme comes from my childhood: a skater drawn in SVG, posed by a hand-written 2D rig, rides a scroll-driven course. Every graphic is code.",
     result: { value: "99", unit: "Lighthouse on desktop, animated skater and all" },
     stack: ["Next.js", "TypeScript", "SVG"],
     live: site.url,

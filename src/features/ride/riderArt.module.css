@@ -1,7 +1,7 @@
 /* ---------- the rider's art (riderArt.ts) ----------
  * Parts carry short paint classes: .ac hoodie yellow, .bl pants, .pk skates, .sk skin, .hr hair, .wh wheels (…s =
  * shade). Outlines scale with --ow, which the rig sets from the rider's size. Colours come from --rider-* (theme.ts).
- * Shared by the ride layer's skater and the deck cover that reuses the rider (DeckArt.tsx): put .art on an ancestor. */
+ * Shared by the ride layer's skater and the raghavgoel.in deck cover that reuses the rider (DeckArt.tsx): put .art on an ancestor. */
 .art :global(.rider) {
   --c-ink: var(--ink);
   --c-white: var(--white);

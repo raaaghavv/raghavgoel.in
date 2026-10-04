@@ -49,6 +49,8 @@ export default function Deck({
   } as CSSProperties;
   // the result headline is sized to fit on one line where it can (20-30px); longer ones wrap evenly
   const resultSize = Math.max(20, Math.min(30, Math.floor(146 / (p.result.value.length * 0.66))));
+  // the back title stays on one line: long names (a domain) step down from 18px
+  const nameSize = Math.min(18, Math.floor(150 / (p.name.length * 0.74)));
   const [kProblem, kBuilt, kResult] = labels.deckResult;
 
   /** where the deck sits in the row, as a transform on the centred spotlight deck; and the centred, enlarged pose */
@@ -173,7 +175,7 @@ export default function Deck({
                 {front(true)}
                 <div className={`${s.face} ${s.back}`}>
                   <span className={s.backHead}>
-                    <strong id={titleId} className={s.backTitle}>
+                    <strong id={titleId} className={s.backTitle} style={{ fontSize: nameSize }}>
                       {p.name}
                     </strong>
                     <span className={s.category}>{p.category}</span>

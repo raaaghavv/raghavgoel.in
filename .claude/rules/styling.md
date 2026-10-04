@@ -27,8 +27,9 @@ paths:
 - **Phone layouts:** the deck row runs edge to edge and `DeckRow` zooms the decks (within `layout.deckRow`) so the
   screen always ends partway through a deck. Wheels are 2-row sideways strips, certificates sit in a ring binder (`CardBinder`). Wide: one plastic sheet of 4 + 4
   pockets, rings down the left. Below an 800px-wide binder (a container query) the cards become two 2 x 2 pages that
-  loop forward: on tablets they turn sideways around rings on the left, like a book; on phones they turn up over rings
-  on top, like a calendar. Drag a page's corner toward the rings, or use the arrows. Cards too wide for a pocket are
+  turn forward: on tablets they turn sideways around rings on the left, like a book; on phones they turn up over rings
+  on top, like a calendar. Dragging a page's corner toward the rings loops (past the last page back to the
+  first); the arrows step through and stop at the ends. Cards too wide for a pocket are
   scaled down whole (`--cz`), never squeezed.
 - **Hover and entry share one pose.** If an entry effect replays a hover state, put both selectors on the same
   rule (e.g. `.flip:hover .inner, .deck[data-nudge] .inner`) so they can't drift apart.

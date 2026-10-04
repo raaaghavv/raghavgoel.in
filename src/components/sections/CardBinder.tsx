@@ -71,7 +71,8 @@ function Corner() {
  * The certificate binder: a clear plastic sheet of card pockets held by three rings. The cards (the <li> children) are
  * grouped into pages of `perPage`. Wide, the pages are the sheet's rows; narrow (a container query in the CSS), they
  * stack and turn around the rings: sideways like a book on tablets, up like a calendar on phones (the CSS picks, and sets
- * --turn for the drag axis). They loop: drag the corner toward the rings, or use the arrows. On entry the holo foil sweeps
+ * --turn for the drag axis). Dragging the corner toward the rings
+ * loops past the last page back to the first; the arrows step through and stop at the ends. On entry the holo foil sweeps
  * across every card in a staggered wave, in the scroll direction. Every card stays in the markup.
  */
 export default function CardBinder({ children, perPage = 4 }: { children: ReactNode; perPage?: number }) {
@@ -136,10 +137,11 @@ export default function CardBinder({ children, perPage = 4 }: { children: ReactN
     return () => ro.disconnect();
   }, []);
 
-  // Pages loop: they only ever turn forward, and turning the last brings the first back on top, like a flip calendar.
+  // Pages turn forward like a flip calendar; dragging past the last page brings the first back on top (a loop).
   // Depth (--d) runs from the open page, so the next page is always the one underneath. A turned page snaps flat again
   // at the bottom of the stack. Drag the open page's corner toward the rings to turn it (it follows the finger; past
-  // turnAt of the way it finishes, else falls back), or use the arrows; ← brings the previous page back down.
+  // turnAt of the way it finishes, else falls back). The arrows step through without wrapping; ← brings the previous
+  // page back down.
   const actions = useRef({ next: () => {}, prev: () => {} });
   useEffect(() => {
     pageRef.current = page;
@@ -166,12 +168,14 @@ export default function CardBinder({ children, perPage = 4 }: { children: ReactN
       else prev();
     };
 
-    function next() {
+    // loop: the corner drag turns past the last page back to the first; the arrows stop at the ends
+    function next(loop = false) {
       if (n < 2) return;
       if (busy) {
-        queued++;
+        if (!loop) queued++;
         return;
       }
+      if (!loop && pageRef.current === n - 1) return;
       busy = true;
       const now = pageRef.current,
         to = (now + 1) % n,
@@ -199,8 +203,9 @@ export default function CardBinder({ children, perPage = 4 }: { children: ReactN
         queued--;
         return;
       }
+      if (pageRef.current === 0) return;
       busy = true;
-      const to = (pageRef.current - 1 + n) % n,
+      const to = pageRef.current - 1,
         pg = list()[to];
       setShown(to);
       // put it on top already turned over the rings, then let it swing back down
@@ -246,7 +251,7 @@ export default function CardBinder({ children, perPage = 4 }: { children: ReactN
       // hand the page back to CSS: it transitions from where the finger left it, to turned or back to open
       delete d.page.dataset.dragging;
       d.page.style.transform = "";
-      if (e.type === "pointerup" && d.p > B.turnAt) next();
+      if (e.type === "pointerup" && d.p > B.turnAt) next(true);
     };
     el.addEventListener("pointerdown", down);
     el.addEventListener("pointermove", move);
@@ -290,13 +295,25 @@ export default function CardBinder({ children, perPage = 4 }: { children: ReactN
         </div>
       </div>
       <div ref={navRef} className={s.pageNav}>
-        <button type="button" className="btn" aria-label={labels.binderPrev} onClick={() => actions.current.prev()}>
+        <button
+          type="button"
+          className="btn"
+          aria-label={labels.binderPrev}
+          disabled={shown === 0}
+          onClick={() => actions.current.prev()}
+        >
           ←
         </button>
         <span aria-live="polite">
           {labels.binderPage} {shown + 1} / {pages.length}
         </span>
-        <button type="button" className="btn" aria-label={labels.binderNext} onClick={() => actions.current.next()}>
+        <button
+          type="button"
+          className="btn"
+          aria-label={labels.binderNext}
+          disabled={shown === pages.length - 1}
+          onClick={() => actions.current.next()}
+        >
           →
         </button>
       </div>

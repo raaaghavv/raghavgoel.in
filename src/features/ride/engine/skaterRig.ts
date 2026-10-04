@@ -252,3 +252,37 @@ export function createSkater(svg: SVGSVGElement) {
 }
 
 export type Skater = ReturnType<typeof createSkater>;
+
+/** the <g …>…</g> element starting at `at` in markup */
+function outerG(s: string, at: number) {
+  const re = /<g[\s>]|<\/g>/g;
+  re.lastIndex = at;
+  let depth = 0;
+  for (let m = re.exec(s); m; m = re.exec(s)) {
+    depth += m[0] === "</g>" ? -1 : 1;
+    if (!depth) return s.slice(at, re.lastIndex);
+  }
+  throw new Error("riderArt: unbalanced <g>");
+}
+
+/**
+ * The rider frozen in one side-view pose, as markup (no DOM), so static art can reuse the same character: the deck
+ * cover (DeckArt.tsx). Mirrors createSkater's setup: bone transforms baked in, the hem copy filled, ids suffixed with
+ * `tag`. Ground is y = 0 under the lowest wheel; 100 units = 1 rig unit. `ow` is the outline width in those units.
+ */
+export function riderMarkup(p: Pose, tag: string, ow: number, lod = false) {
+  const B = solve(p, 0);
+  const dx = clamp((p.yaw + 0.55) * 4.5, -3.5, 2.5);
+  let svg = RIDER_SVG.replace(/data-bone="([\w-]+)"/g, (m, k: string) => `${m} transform="${mstr(B[k])}"`).replace(
+    'class="feat"',
+    `class="feat" transform="translate(${dx.toFixed(2)} 0)"`,
+  );
+  svg = svg.replace(/<g ([^>]*)data-copy="([\w-]+)"><\/g>/g, (_, attrs: string, id: string) => {
+    const src = outerG(svg, svg.indexOf(`<g id="${id}"`)).replace(/ id="[\w-]+"/g, "");
+    return `<g ${attrs}data-copy="${id}">${src}</g>`;
+  });
+  return svg
+    .replace(/id="([\w-]+)"/g, `id="$1-${tag}"`)
+    .replace(/url\(#([\w-]+)\)/g, `url(#$1-${tag})`)
+    .replace('<g class="rider">', `<g class="rider${lod ? " lod" : ""}" style="--ow:${ow}px">`);
+}

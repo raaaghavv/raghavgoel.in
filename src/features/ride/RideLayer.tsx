@@ -5,6 +5,7 @@ import { checkpoints, labels } from "@/config/sections";
 import { startRide } from "./engine/engine";
 import type { RideElements } from "./engine/types";
 import s from "./RideLayer.module.css";
+import art from "./riderArt.module.css";
 
 type Part = Exclude<keyof RideElements, "railItems">;
 const PARTS: Part[] = [
@@ -48,7 +49,7 @@ export default function RideLayer() {
   return (
     <div ref={rootRef} className={s.root}>
       <canvas data-ride="fxCanvas" className={s.fx} aria-hidden="true" />
-      <svg data-ride="skater" className={s.skater} aria-hidden="true" focusable="false" />
+      <svg data-ride="skater" className={`${s.skater} ${art.art}`} aria-hidden="true" focusable="false" />
       <div data-ride="banner" className={s.banner} aria-hidden="true">
         <span className={s.trophy}>{labels.finishTrophy}</span>
         <small data-ride="bannerNo" />

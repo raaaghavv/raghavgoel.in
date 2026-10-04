@@ -1,0 +1,200 @@
+/* ---------- the rider's art (riderArt.ts) ----------
+ * Parts carry short paint classes: .ac hoodie yellow, .bl pants, .pk skates, .sk skin, .hr hair, .wh wheels (…s =
+ * shade). Outlines scale with --ow, which the rig sets from the rider's size. Colours come from --rider-* (theme.ts).
+ * Shared by the ride layer's skater and the deck cover that reuses the rider (DeckArt.tsx): put .art on an ancestor. */
+.art :global(.rider) {
+  --c-ink: var(--ink);
+  --c-white: var(--white);
+  --c-acid: var(--rider-acid);
+  --c-acid-sh: var(--rider-acid-shade);
+  --c-pink: var(--rider-pink);
+  --c-pink-sh: var(--rider-pink-shade);
+  --c-blue: var(--rider-blue);
+  --c-blue-sh: var(--rider-blue-shade);
+  --c-skin: var(--rider-skin);
+  --c-skin-sh: var(--rider-skin-shade);
+  --c-hair: var(--rider-hair);
+  --c-hair-hi: var(--rider-hair-light);
+  --c-hair-ln: var(--rider-hair-dark);
+  --c-iris: var(--rider-iris);
+  --c-wheel: var(--rider-wheel);
+  --c-wheel-sh: var(--rider-wheel-shade);
+  --c-hub: var(--rider-hub);
+  --c-plate: var(--rider-plate);
+}
+/* far side (back arm, leg, skate): a touch darker so it reads as behind */
+.art :global(.rider .far) {
+  --c-acid: var(--rider-far-acid);
+  --c-acid-sh: var(--rider-far-acid-shade);
+  --c-pink: var(--rider-far-pink);
+  --c-pink-sh: var(--rider-far-pink-shade);
+  --c-blue: var(--rider-far-blue);
+  --c-blue-sh: var(--rider-far-blue-shade);
+  --c-skin: var(--rider-far-skin);
+  --c-wheel: var(--rider-far-wheel);
+  --c-wheel-sh: var(--rider-far-wheel-shade);
+}
+.art :global(.rider .o) {
+  stroke: var(--c-ink);
+  stroke-width: var(--ow);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.art :global(.rider .ot) {
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 0.62);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.art :global(.rider .ln),
+.art :global(.rider .lm),
+.art :global(.rider .lb),
+.art :global(.rider .st),
+.art :global(.rider .u-st),
+.art :global(.rider .cord),
+.art :global(.rider .cord-in),
+.art :global(.rider .aglet),
+.art :global(.rider .aglet-in),
+.art :global(.rider .wrim) {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.art :global(.rider .ln) {
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 0.55);
+}
+.art :global(.rider .lm) {
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 0.8);
+}
+.art :global(.rider .lb) {
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 1.2);
+}
+.art :global(.rider .st) {
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 0.42);
+  stroke-dasharray: 1.6 2.2;
+  opacity: 0.8;
+}
+/* each limb's outline is drawn once under all of its parts, so joints read as one shape */
+.art :global(.rider .u-st) {
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 2);
+}
+.art :global(.rider .u-fi) {
+  stroke: none;
+}
+.art :global(.rider .ac) {
+  fill: var(--c-acid);
+}
+.art :global(.rider .acs) {
+  fill: var(--c-acid-sh);
+}
+.art :global(.rider .pk) {
+  fill: var(--c-pink);
+}
+.art :global(.rider .pks) {
+  fill: var(--c-pink-sh);
+}
+.art :global(.rider .bl) {
+  fill: var(--c-blue);
+}
+.art :global(.rider .bls) {
+  fill: var(--c-blue-sh);
+}
+.art :global(.rider .sk) {
+  fill: var(--c-skin);
+}
+.art :global(.rider .sks) {
+  fill: var(--c-skin-sh);
+}
+.art :global(.rider .hr) {
+  fill: var(--c-hair);
+}
+.art :global(.rider .hlf) {
+  fill: var(--c-hair-hi);
+}
+.art :global(.rider .crease) {
+  fill: var(--c-hair-ln);
+}
+.art :global(.rider .k) {
+  fill: var(--c-ink);
+}
+.art :global(.rider .w) {
+  fill: var(--c-white);
+}
+.art :global(.rider .ir) {
+  fill: var(--c-iris);
+}
+.art :global(.rider .wh) {
+  fill: var(--c-wheel);
+}
+.art :global(.rider .whs) {
+  fill: var(--c-wheel-sh);
+}
+.art :global(.rider .hub) {
+  fill: var(--c-hub);
+}
+.art :global(.rider .pl) {
+  fill: var(--c-plate);
+}
+.art :global(.rider .wrim) {
+  stroke: var(--c-wheel-sh);
+  stroke-width: calc(var(--ow) * 0.7);
+}
+.art :global(.rider .cord) {
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 1.25);
+}
+.art :global(.rider .cord-in) {
+  stroke: var(--c-acid);
+  stroke-width: calc(var(--ow) * 0.45);
+}
+.art :global(.rider .aglet) {
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 1.7);
+}
+.art :global(.rider .aglet-in) {
+  stroke: var(--c-acid-sh);
+  stroke-width: calc(var(--ow) * 0.75);
+}
+/* the 01 print */
+.art :global(.rider .n-rim) {
+  fill: var(--c-ink);
+  stroke: var(--c-pink);
+  stroke-width: calc(var(--ow) * 2.1);
+  stroke-linejoin: round;
+}
+.art :global(.rider .n-ol) {
+  fill: var(--c-ink);
+  stroke: var(--c-ink);
+  stroke-width: calc(var(--ow) * 1.2);
+  stroke-linejoin: round;
+}
+.art :global(.rider .n-face) {
+  fill: var(--c-pink);
+}
+/* standing, he faces us (.front): the near skate, the leg prints and the far ear swap to front-facing art,
+   and the seat's side-view curve is left out so the legs meet in a plain seam */
+.art :global(.rider .sk-front),
+.art :global(.rider .lg-front),
+.art :global(.rider .ear-far),
+.art :global(.rider.front .sk-side),
+.art :global(.rider.front .lg-side),
+.art :global(.rider.front .seat) {
+  display: none;
+}
+.art :global(.rider.front .sk-front),
+.art :global(.rider.front .lg-front),
+.art :global(.rider.front .ear-far) {
+  display: inline;
+}
+/* small (the rail): no stitches, laces or print rim */
+.art :global(.rider.lod .dt) {
+  display: none;
+}
+.art :global(.rider.lod .n-rim) {
+  stroke-width: 0;
+}

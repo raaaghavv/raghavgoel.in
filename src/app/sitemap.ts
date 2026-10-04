@@ -9,6 +9,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${site.url}/`, lastModified: now, changeFrequency: "monthly", priority: 1 },
     { url: `${site.url}/llms.txt`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${site.url}/llms-full.txt`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
-    { url: `${site.url}${site.resume.href}`, lastModified: now, changeFrequency: "yearly", priority: 0.6 },
   ];
 }

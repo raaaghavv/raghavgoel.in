@@ -40,7 +40,7 @@ export const site: SiteConfig = {
     openLabel: "Open",
     basedIn: "Based in",
     sticker: "Let's build something!",
-    tag: "RG '26",
+    tag: "RG",
     form: {
       title: "Send a message",
       web3formsKey: process.env.NEXT_PUBLIC_WEB3FORMS_KEY || undefined,
@@ -62,8 +62,13 @@ export const site: SiteConfig = {
   socials: [
     { kind: "linkedin", label: "LinkedIn", handle: "raghav-goel01", href: "https://www.linkedin.com/in/raghav-goel01" },
     { kind: "github", label: "GitHub", handle: "raaaghavv", href: "https://github.com/raaaghavv" },
+    { kind: "x", label: "X", handle: "@raaaghavvvvv", href: "https://x.com/raaaghavvvvv" },
   ],
-  resume: { title: "Résumé", href: "/resume/RaghavGoel_Resume.pdf", label: "one page · PDF" },
+  resume: {
+    title: "Résumé",
+    href: "https://drive.google.com/drive/folders/176zwefbsG_pOOBEzZ9s9EnP0yeSp3EyU?usp=sharing",
+    label: "Google Drive",
+  },
   footnote: "Skater, skates and every graphic on this page are drawn in code.",
 };
 

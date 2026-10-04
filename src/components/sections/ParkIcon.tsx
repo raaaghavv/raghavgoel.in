@@ -13,6 +13,9 @@ const paths: Partial<Record<IconName, { d: string; stroke?: boolean }>> = {
   github: {
     d: "M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z",
   },
+  x: {
+    d: "M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.65l-5.21-6.82-5.97 6.82H1.68l7.73-8.84L1.25 2.25h6.83l4.71 6.23 5.45-6.23Zm-1.16 17.52h1.83L7.08 4.13H5.12l11.96 15.64Z",
+  },
   resume: { d: "M6 2.5h8l4.5 4.5v14.5h-12.5Zm8 0V7h4.5M9 12h6M9 15.5h6M9 19h3.5", stroke: true },
   pin: {
     d: "M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z",
@@ -20,7 +23,7 @@ const paths: Partial<Record<IconName, { d: string; stroke?: boolean }>> = {
   send: { d: "M21 3 10 14M21 3l-7 18-4-7-7-4 18-7Z", stroke: true },
 };
 
-/** Small line/solid icons for the contact board (brand marks for LinkedIn and GitHub link to the profiles). */
+/** Small line/solid icons for the contact board (brand marks for LinkedIn, GitHub and X link to the profiles). */
 export default function ParkIcon({ name }: { name: IconName }) {
   const p = paths[name];
   if (!p) return null;

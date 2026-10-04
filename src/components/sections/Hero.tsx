@@ -21,9 +21,7 @@ export default function Hero() {
         ))}
       </div>
       <header className={s.topbar}>
-        <span>
-          {name.full} / portfolio &apos;{String(new Date().getFullYear()).slice(2)}
-        </span>
+        <span>{name.full} / portfolio</span>
         <span className={s.pill}>
           <i aria-hidden="true" />
           {site.availability}

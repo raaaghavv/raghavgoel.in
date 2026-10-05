@@ -12,10 +12,10 @@ export const projects: Project[] = [
     meta: "Oct 2026",
     tag: "A portfolio you ride through",
     category: "Interactive site",
-    problem: "Developer portfolios all look like the same template.",
+    problem: "I wanted a personal site that actually reflects me.",
     built:
-      "The skate theme comes from my childhood: a skater drawn in SVG, posed by a hand-written 2D rig, rides a scroll-driven course. Every graphic is code.",
-    result: { value: "99", unit: "Lighthouse on desktop, animated skater and all" },
+      "My vision, built entirely with AI: a skate theme from my childhood, a skater posed by a 2D rig on a scroll-driven course, and every graphic in code.",
+    result: { value: "Zero 3D libs", unit: "No three.js, no GSAP: a 2D rig and one loop. Still Lighthouse 99." },
     stack: ["Next.js", "TypeScript", "SVG"],
     live: site.url,
     repo: gh("raghavgoel.in"),

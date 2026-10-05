@@ -69,4 +69,5 @@ Deeper practices load automatically when you work on matching files (`.claude/ru
 
 - Don't commit or push unless asked.
 - Before using a Next.js API, check the bundled docs (`node_modules/next/dist/docs/`), because v16 differs from older versions.
-- Keep the README's "Editing content" section in sync when config files or their meaning change.
+- Keep `docs/development.md` ("Editing content" and the rest) in sync when config files or their meaning change. The
+  README is the personal story behind the site, not a developer guide.

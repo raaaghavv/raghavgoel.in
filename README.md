@@ -1,85 +1,70 @@
-# Raghav Goel — Skate Run portfolio
+# raghavgoel.in
 
-A 90s skate-zine portfolio. A code-built 3D skater rolls in, reveals the name, drifts to a stop, then jumps onto a
-progress-bar scrollbar that you can grab and ride through the checkpoints to a course-clear finish.
+**Live:** [raghavgoel.in](https://raghavgoel.in)
 
-Next.js 16 (App Router, static export) · TypeScript · Lenis · vanilla CSS modules. No Tailwind, no GSAP.
+<!-- demo clip: add docs/demo.gif (5–10 s of the drop-in and a rail ride) and uncomment
+![The skater drops onto the rail and rides to the projects](docs/demo.gif)
+-->
 
-## Scripts
+This is my portfolio, and you don't scroll through it so much as ride it. A skater rolls in, writes my name on the way past, drifts to a stop and drops onto the scrollbar. From there you can grab the skater and grind through my work, one checkpoint at a time, to a course-clear finish.
 
-| Command                              | What it does                         |
-| ------------------------------------ | ------------------------------------ |
-| `npm run dev`                        | Dev server on http://localhost:3000  |
-| `npm run build`                      | Static export to `out/`              |
-| `npm start`                          | Serve `out/` locally                 |
-| `npm run lint` / `npm run typecheck` | ESLint / `tsc --noEmit`              |
-| `npm run format`                     | Format everything with Prettier      |
-| `npm run check`                      | Format check, lint, typecheck, build |
+## Why a skate run
 
-## Editing content
+Skating is where I come from. It was my childhood, long before I wrote any code, and I wanted the place that
+introduces me to feel like me, not like a template with my name swapped in.
 
-Everything the page shows comes from `src/config`. Components never contain copy.
+<!-- your story: a line or two about where and what you skated, or a memory that stuck, goes here -->
 
-| File                             | Controls                                                                 |
-| -------------------------------- | ------------------------------------------------------------------------ |
-| `config/site.ts`                 | Name, role, description, email, socials, résumé, hero copy, contact copy |
-| `config/sections.ts`             | Checkpoint order, titles, skate aliases, blurbs, UI labels               |
-| `config/content/projects.ts`     | Decks (projects)                                                         |
-| `config/content/stack.ts`        | Wheels (skills), durometer tiers and scale                               |
-| `config/content/experience.ts`   | Run log (experience)                                                     |
-| `config/content/certificates.ts` | Card binder (certificates)                                               |
-| `config/crawlers.ts`             | AI crawlers welcomed in robots.txt                                       |
-| `config/seo.ts`                  | Share image and icon paths/sizes                                         |
+So the whole site is a 90s skate zine. Paper, thick ink outlines, pink, acid yellow and blue, and type that looks
+cut out and taped down. Projects are skate decks, each with its own cover art, that flip over to show what I built.
+Skills are wheels, rated in durometer, the hardness scale skaters use: 99A is what I use every day, 92A is what I've
+shipped, 84A is what I've built with. Experience is a run log, certificates are trading cards in a ring binder, and
+the contact section is the finish line.
 
-Adding a section: add an entry to `checkpoints` in `sections.ts`, create a component that wraps its content in
-`<Section id="…">`, and render it in `app/page.tsx`. The rail, checkpoint numbers, banners and anchors follow automatically.
+## Drawn in code, built with AI
 
-`**bold**` in copy is rendered as emphasis (`lib/text.tsx`).
+My first attempt mixed assets from different places, and it never felt like one thing. This time I set one rule:
+**every graphic is code.** The skater, the deck covers, the wheels, the binder, even the clouds and the favicon are
+SVG and CSS, so everything shares one hand.
 
-## Theme and motion
+And this time I built it entirely with AI, using Claude Opus 5.5. I didn't write the code by hand: I brought the
+vision and the intent, and Claude did the building. Every decision was mine: the zine look, how the skater should move, what each section should say
+and every "no, not like that" along the way.
 
-- `config/theme.ts` is the single source for colors, card tints, the rider's palette and layout sizes. It is rendered
-  as CSS variables in `app/layout.tsx` (the rider's art is painted with them) and imported by the effects canvas.
-- `config/motion.ts` holds every animation tunable: intro timeline, stunt and glide durations, springs, skater scales,
-  rail behavior, speed lines, drift, celebration.
-- Fonts load through `next/font` and are exposed as `--font-display`, `--font-body`, `--font-mono`, `--font-marker`.
+The skater is me, drawn from my own character sheet as layered SVG parts and posed by a small rig: joints, springs,
+feet that stay planted, eyes that follow your pointer. No animation library, just one loop that runs the
+choreography. Getting it to feel right took the most direction of anything here, and it's the part I'm proudest of:
+a system with moving parts that has to feel effortless to the person using it.
 
-## How the ride works
+## About me
 
-`RideLayer.tsx` server-renders the overlay (hidden until the engine runs) and starts the engine in an effect. The
-engine is imported statically, so its chunk is referenced from the HTML and downloads in parallel with React.
-`bootScript.ts` is an inline `<head>` script that hides the hero name before first paint, so it doesn't show, vanish
-and roll back in. `engine/` is plain TypeScript driven by one `requestAnimationFrame` loop:
+I'm Raghav Goel, an AI software engineer. I build AI products end to end: agents that do real work inside a
+product, like triaging requests, tracing a problem to its root cause and proposing the fix, and the systems around
+them, from real-time updates and document generation to reporting. I like the whole path, from the model call to the
+product around it to the infrastructure that keeps it up at 3am.
 
-- `skaterRig.ts`: the rider, a layered SVG cut-out drawn from the character sheet: forward kinematics from the pose
-  angles, foot planting, the turn to face the viewer when standing, pupils and head that follow the pointer
-- `riderArt.ts`: the rider's SVG parts, generated by `scripts/rider/build.py` (edit the script, then run
-  `python3 scripts/rider/build.py`; the hair is traced from the sheet into `scripts/rider/hair_trace.json`). Its
-  paint is `riderArt.module.css`, shared with the raghavgoel.in deck cover, which poses the same rider via `riderMarkup`
-- `poses.ts`: pose library, push cycle and critically damped joint springs
-- `stunt.ts`: hero ↔ rail state machine; scroll intent triggers it, Lenis holds and glides the scroll
-- `rail.ts`: checkpoint layout, drag with preserved offset, snap, keyboard scrollbar. Down the right side on
-  desktop; along the bottom on phones, where the skater grinds it
-- `fx.ts`: 2D canvas for smoke, sparks, skid marks, speed lines, confetti and fireworks
+I'm open to software engineering, full-stack, AI engineering and forward-deployed roles.
 
-Sections are server-rendered markup. The engine finds them through data attributes: `data-checkpoint`, `data-title`,
-`data-alias`, `data-dock`, `data-reveal-root`, `data-reveal`. Engine state is written back as data attributes
-(`data-live`, `data-cur`, `data-show`…) that the CSS modules style.
+- Site: [raghavgoel.in](https://raghavgoel.in)
+- LinkedIn: [raghav-goel01](https://www.linkedin.com/in/raghav-goel01)
+- X: [@raaaghavvvvv](https://x.com/raaaghavvvvv)
+- Email: work.raghav01@gmail.com
 
-With `prefers-reduced-motion`, there is no scroll lock or particles, and Lenis is off.
+## Under the hood
 
-## SEO and AI agents
+Next.js (static export), TypeScript, Lenis for smooth scrolling and plain CSS modules. Everything the page says lives
+in `src/config`, the ride engine lives in `src/features/ride`, and the whole site ships as static files: it scores
+99 / 100 / 100 / 100 on Lighthouse (desktop) and reads fully without JavaScript, for people and AI crawlers alike.
 
-- All content is in the static HTML, so crawlers don't need to run JS.
-- Metadata, OpenGraph/Twitter and canonical tags are built from `site.ts`. `/og.png` and `/icon.png` are generated at build time.
-- JSON-LD includes `Person` (with credentials and skills), `WebSite` and `ScholarlyArticle`.
-- `robots.txt` names the AI crawlers, alongside `sitemap.xml` and `manifest.webmanifest`.
-- `/llms.txt` and `/llms-full.txt` are markdown profiles generated from the same config, so they never drift from the page.
+To run it: `npm install`, then `npm run dev` (Node 22+). How it's put together, and where to change things, is in
+[docs/development.md](docs/development.md).
 
-## Deploy
+## License and credits
 
-Set `NEXT_PUBLIC_SITE_URL` (see `.env.example`) and deploy `out/` to any static host: Vercel, Netlify, Cloudflare Pages or S3.
+The source code is [MIT](LICENSE). The rider character and its art, the deck cover illustrations, the written content
+and the site's visual design are © Raghav Goel, all rights reserved. Learn from the code, fork the engine, borrow the
+binder, but please don't publish the site itself as your own.
 
-The contact form needs no server. Set `NEXT_PUBLIC_WEB3FORMS_KEY` to a [Web3Forms](https://web3forms.com) access key
-and messages land in your inbox, with the visitor's address as reply-to. It's read at build time, so set it on your
-host and redeploy. Leave it empty and the form opens the visitor's email app with the message filled in.
+- Issuer logos for Anthropic, Docker, Udemy and Wipro: [Simple Icons](https://simpleicons.org) (CC0). Company names
+  and logos are trademarks of their owners.
+- Bowlby One by Vernon Adams, [SIL Open Font License](src/assets/fonts/OFL-BowlbyOne.txt).

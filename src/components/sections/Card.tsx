@@ -2,6 +2,28 @@
 
 import type { PointerEvent } from "react";
 import type { Certificate } from "@/types/content";
+import { issuerLogos, type LogoArt } from "@/config/issuerLogos";
+
+/** an issuer's mark in its own colours: filled shapes, and lines for the parts drawn as outlines */
+function Logo({ art }: { art: LogoArt }) {
+  return (
+    <svg viewBox={art.viewBox} aria-hidden="true" focusable="false">
+      {/* a fixed list (a shape can repeat, e.g. a fill and its outline), so the index is the key */}
+      {art.parts.map((p, i) => (
+        <path
+          key={i}
+          d={p.d}
+          fill={p.fill ?? "none"}
+          fillRule="evenodd"
+          stroke={p.stroke}
+          strokeWidth={p.width}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      ))}
+    </svg>
+  );
+}
 import s from "./Certificates.module.css";
 
 /** Holo trading card that tilts toward the pointer. Writes CSS vars directly: no re-render per move. */
@@ -43,7 +65,10 @@ export default function Card({ cert: c, number }: { cert: Certificate; number: s
         </p>
         <footer className={s.foot}>
           <span className={s.meta}>
-            <span>{c.issuer}</span>
+            <span className={s.issuer}>
+              {c.logo && <Logo art={issuerLogos[c.logo]} />}
+              {c.issuer}
+            </span>
             <span>{c.date}</span>
           </span>
           <span>{number}</span>

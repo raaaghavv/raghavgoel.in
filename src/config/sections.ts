@@ -26,7 +26,7 @@ export const checkpoints: Checkpoint[] = [
     id: "certificates",
     title: "Certificates",
     alias: "card binder",
-    blurb: "Courses I've finished, collected like trading cards. Starred cards are from Anthropic.",
+    blurb: "Courses I've finished, collected like trading cards. The starred rares are from Anthropic.",
   },
   { id: "contact", title: "Contact", alias: "finish line" },
 ];

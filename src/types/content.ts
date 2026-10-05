@@ -1,3 +1,4 @@
+import type { IssuerLogo } from "@/config/issuerLogos";
 /** Typed schemas for everything the page renders. Content lives in src/config. */
 
 export type SocialKind = "github" | "linkedin" | "resume" | "x" | "website";
@@ -165,6 +166,8 @@ export type CardType = "ai" | "ops" | "be";
 
 export interface Certificate {
   name: string;
+  /** the issuer's mark beside its name (config/issuerLogos.ts) */
+  logo?: IssuerLogo;
   type: CardType;
   art: string;
   issuer: string;

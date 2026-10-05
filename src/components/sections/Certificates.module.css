@@ -223,6 +223,16 @@
   gap: 3px;
   line-height: 1.2; /* long issuers wrap without cramping */
 }
+/* the issuer, a size up from the rest of the footer, with its mark (~14px) in its own colours */
+.issuer {
+  font-size: 11px;
+}
+.issuer svg {
+  width: 1.3em;
+  height: 1.3em;
+  margin-right: 0.4em;
+  vertical-align: -0.3em;
+}
 
 .card::after {
   content: "";

@@ -5,9 +5,9 @@ const email = "work.raghav01@gmail.com";
 
 export const site: SiteConfig = {
   name: { first: "Raghav", last: "Goel", full: "Raghav Goel" },
-  role: "Full-stack engineer",
+  role: "AI Software Engineer",
   description:
-    "Raghav Goel is a full-stack engineer at ManufApp, building the AI agents that triage support tickets and the real-time, PDF and reporting systems behind a manufacturing ERP.",
+    "Raghav Goel is an AI software engineer at ManufApp, building the AI agents that triage support tickets and the real-time, PDF and reporting systems behind a manufacturing ERP.",
   url,
   locale: "en_IN",
   email,

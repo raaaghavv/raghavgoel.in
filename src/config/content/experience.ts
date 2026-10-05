@@ -26,7 +26,7 @@ export const experience: ExperienceEntry[] = [
     badge: "FREELANCE · REMOTE",
     stamp: { value: "2K", caption: "followers", ring: "organic · Instagram" },
     points: [
-      "Gave the business its **first brand presence**: customised a Figma template into its website and built it in React.",
+      "Gave the business its **first brand presence**: designed its website in Figma and built it in React.",
       "Managed its **social media**: grew Instagram to **2,000 organic followers**, recording and editing the clips myself.",
       "Co-ran **workshops and webinars**.",
     ],

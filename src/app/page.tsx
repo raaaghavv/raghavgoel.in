@@ -12,9 +12,9 @@ export default function Home() {
     <>
       <main id="main">
         <Hero />
+        <Experience />
         <Projects />
         <Stack />
-        <Experience />
         <Certificates />
         <Finish />
       </main>

@@ -57,6 +57,16 @@
   font-size: 14px;
   color: var(--muted);
 }
+.where > span a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.where > span a:hover,
+.where > span a:focus-visible {
+  color: var(--ink);
+}
 .where > .lvl {
   display: inline-block;
   max-width: 100%;

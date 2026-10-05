@@ -7,6 +7,7 @@ import type { Checkpoint } from "@/types/content";
  */
 export const checkpoints: Checkpoint[] = [
   { id: "start", title: "Start", alias: "start" },
+  { id: "experience", title: "Experience", alias: "run log", blurb: "Where I've skated and what landed." },
   {
     id: "projects",
     title: "Projects",
@@ -21,7 +22,6 @@ export const checkpoints: Checkpoint[] = [
     blurb:
       "Durometer is how hard a skate wheel is. Here it's how much I've ridden each tool: 99A is daily at work, 92A has shipped in real projects, 84A I've built with.",
   },
-  { id: "experience", title: "Experience", alias: "run log", blurb: "Where I've skated and what landed." },
   {
     id: "certificates",
     title: "Certificates",

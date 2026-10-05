@@ -153,6 +153,8 @@ export interface ExperienceEntry {
   to?: string;
   title: string;
   org: string;
+  /** the org's website: the name links to it */
+  orgUrl?: string;
   badge?: string;
   stamp?: Stamp;
   /** `**bold**` segments are emphasised */

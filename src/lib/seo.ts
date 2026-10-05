@@ -71,6 +71,9 @@ export function llmsTxt() {
     `- [Full profile for LLMs](${site.url}/llms-full.txt): every project, skill, role and certificate as markdown`,
     `- [Résumé](${site.resume.href})`,
     "",
+    `## ${sec("experience").title}`,
+    ...experience.map((e) => `- ${e.title}, ${e.org} (${e.from}${labels.rangeSeparator}${e.to ?? "present"})`),
+    "",
     `## ${sec("projects").title}`,
     ...projects.map((p) => `- ${p.name}: ${p.tag}. ${p.result.value} ${p.result.unit}.`),
     "",
@@ -94,6 +97,16 @@ export function llmsFullTxt() {
     ...site.socials.map((s) => `- ${s.label}: ${s.href}`),
     "",
   ];
+  out.push("## Experience", "");
+  experience.forEach((e) => {
+    out.push(
+      `### ${e.title}, ${e.org} (${e.from}${labels.rangeSeparator}${e.to ?? "present"})`,
+      "",
+      ...(e.orgUrl ? [`- Website: ${e.orgUrl}`] : []),
+      ...e.points.map((pt) => `- ${plain(pt)}`),
+      "",
+    );
+  });
   out.push("## Projects", "");
   projects.forEach((p) => {
     out.push(
@@ -107,15 +120,6 @@ export function llmsFullTxt() {
       ...(p.live ? [`- Live: ${p.live}`] : []),
       ...(p.demo ? [`- Demo: ${p.demo}`] : []),
       `- Code: ${p.repo}`,
-      "",
-    );
-  });
-  out.push("## Experience", "");
-  experience.forEach((e) => {
-    out.push(
-      `### ${e.title}, ${e.org} (${e.from}${labels.rangeSeparator}${e.to ?? "present"})`,
-      "",
-      ...e.points.map((pt) => `- ${plain(pt)}`),
       "",
     );
   });

@@ -5,7 +5,8 @@ export const experience: ExperienceEntry[] = [
   {
     from: "Oct 2025",
     title: "Full-Stack Engineer",
-    org: "ManufApp",
+    org: site.employer.name,
+    orgUrl: site.employer.url,
     badge: "OWNS 5 SYSTEMS IN PROD",
     stamp: { value: "−82%", caption: "deploy time", ring: "17 min → 3 min" },
     points: [
@@ -15,6 +16,19 @@ export const experience: ExperienceEntry[] = [
       "Built **per-client PDF templates** for 12 document types, used by 30–40 companies. Layout changes that took a **full sprint are now self-serve**, and **100 PDFs download in one click in under 18 s**.",
       "Cut the **deploy pipeline from 17 min to 3** (build alone: 1m 40s). Moved to ESM so Turbopack could replace webpack, dropped 30+ re-transpiled packages, and made 2,100+ lodash call sites tree-shakeable.",
       "Built the **WebSocket layer** behind agent chat, notifications and live ticket updates (~200 live connections), and **configurable reports** that replaced 22 fixed report types for 30–40 companies.",
+    ],
+  },
+  {
+    from: "Jan 2025",
+    to: "Jul 2025",
+    title: "Developer & Social Media Manager",
+    org: "CraftyyDrafty",
+    badge: "FREELANCE · REMOTE",
+    stamp: { value: "2K", caption: "followers", ring: "organic · Instagram" },
+    points: [
+      "Gave the business its **first brand presence**: customised a Figma template into its website and built it in React.",
+      "Managed its **social media**: grew Instagram to **2,000 organic followers**, recording and editing the clips myself.",
+      "Co-ran **workshops and webinars**.",
     ],
   },
   {

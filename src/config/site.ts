@@ -14,7 +14,7 @@ export const site: SiteConfig = {
   location: "Greater Noida, India",
   timezone: { label: "UTC +5:30", iana: "Asia/Kolkata" },
   availability: "Open to SWE, AI & FDE roles",
-  employer: { name: "ManufApp" },
+  employer: { name: "ManufApp", url: "https://manufapp.com" },
   education: {
     school: "Galgotias College of Engineering and Technology",
     degree: "B.Tech, Computer Science & Design",
@@ -27,7 +27,7 @@ export const site: SiteConfig = {
       "I build AI products end to end: **the model calls, the product around them, and the infra** that keeps them up at 3am. At ManufApp, my agents triage **500+ support tickets a month**.",
     scribble: "scroll to drop in ↓",
     ctas: [
-      { label: "See the projects", href: "#projects", primary: true },
+      { label: "See my work", href: "#experience", primary: true },
       { label: "Contact", href: "#contact" },
     ],
   },

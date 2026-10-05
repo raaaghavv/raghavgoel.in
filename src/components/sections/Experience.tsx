@@ -28,7 +28,15 @@ export default function Experience() {
                 </td>
                 <td className={s.where}>
                   <b>{e.title}</b>
-                  <span>{e.org}</span>
+                  <span>
+                    {e.orgUrl ? (
+                      <a href={e.orgUrl} target="_blank" rel="noopener">
+                        {e.org} <span aria-hidden="true">↗</span>
+                      </a>
+                    ) : (
+                      e.org
+                    )}
+                  </span>
                   {e.badge && <span className={s.lvl}>{e.badge}</span>}
                 </td>
                 <td className={s.what}>

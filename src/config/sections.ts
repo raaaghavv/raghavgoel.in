@@ -60,4 +60,6 @@ export const labels = {
   binderPrev: "Previous page",
   binderNext: "Next page",
   binderPage: "Page",
+  /** the binder hint (once per page load), by turn axis: x = calendar (phones, drag up), y = book (tablets, drag left) */
+  binderHint: { x: "drag to flip ↑", y: "drag to flip ←" },
 };

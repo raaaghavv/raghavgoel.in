@@ -271,6 +271,10 @@
 /* Tablets: rings stay down the left and a page turns sideways around them, like a book (away from the progress rail
    on the right). Phones: rings run across the top and a page turns up over them, like a calendar. Pages loop, turning
    forward only (CardBinder). CardBinder reads --turn for the drag axis. */
+/* the one-time "drag to flip" note (CardBinder); only the flippable pages show it */
+.hint {
+  display: none;
+}
 .pageNav {
   display: none;
 }
@@ -379,6 +383,31 @@
     opacity: 0.35;
     cursor: default;
   }
+  /* the hint: marker text by the corner (generated content, so it reads as decoration), while the open page lifts
+     a little and settles: the move a drag makes. Tablets have room under the page, right of the page arrows */
+  .hint {
+    display: block;
+    position: absolute;
+    right: 0;
+    bottom: -31px;
+    z-index: calc(var(--pages) + 1);
+    font: 400 17px/1 var(--font-marker);
+    color: var(--pink);
+    white-space: nowrap;
+    transform: rotate(-4deg);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .hint::before {
+    content: attr(data-text);
+  }
+  .hint[data-show] {
+    opacity: 1;
+  }
+  .page[data-hint] {
+    animation: peel-book var(--peel-ms) ease-in-out var(--peels);
+  }
 
   /* phones: a calendar. Rings across the top, pages turn up over them */
   @media (max-width: 700px) {
@@ -413,5 +442,30 @@
     .corner .left {
       display: none;
     }
+    .page[data-hint] {
+      animation-name: peel-calendar;
+    }
+    /* phones: no room beside the arrows, so the note sits in the strip under the cards, left of the corner */
+    .hint {
+      right: 50px;
+      bottom: 7px;
+    }
   }
 }
+
+@keyframes peel-book {
+  45% {
+    transform: rotateY(calc(var(--peel) * -180deg));
+  }
+}
+@keyframes peel-calendar {
+  45% {
+    transform: rotateX(calc(var(--peel) * 180deg));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page[data-hint] {
+    animation: none;
+  }
+}
+

@@ -29,8 +29,9 @@ paths:
   pockets, rings down the left. Below an 800px-wide binder (a container query) the cards become two 2 x 2 pages that
   turn forward: on tablets they turn sideways around rings on the left, like a book; on phones they turn up over rings
   on top, like a calendar. Dragging a page's corner toward the rings loops (past the last page back to the
-  first); the arrows step through and stop at the ends. Cards too wide for a pocket are
-  scaled down whole (`--cz`), never squeezed.
+  first); the arrows step through and stop at the ends. The first time the open page's corner is on screen, the page
+  lifts once and settles beside a "drag to flip" note (`motion.binder.hint`, once per page load).
+  Cards too wide for a pocket are scaled down whole (`--cz`), never squeezed.
 - **Hover and entry share one pose.** If an entry effect replays a hover state, put both selectors on the same
   rule (e.g. `.flip:hover .inner, .deck[data-nudge] .inner`) so they can't drift apart.
 - **Valid markup:** no block elements inside `<button>` (use spans with `display: block`), one `h1`, and an `h2` per section.

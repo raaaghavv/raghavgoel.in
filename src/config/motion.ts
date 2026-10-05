@@ -159,6 +159,12 @@ export const motion = {
     dragSpan: 0.8,
     /** let go past this share of the turn and the page finishes turning; earlier, it falls back */
     turnAt: 0.4,
+    /**
+     * the binder hint (once per page load): once the open page's corner is fully on screen and `enterAt` of the
+     * viewport up from the bottom, after `delay` ms the page lifts `peel` of a turn and settles (`peels` times, `peelMs`
+     * each) beside a "drag to flip" note that shows for `showFor` ms or until the first turn
+     */
+    hint: { delay: 500, peel: 0.15, peelMs: 900, peels: 1, showFor: 4500, enterAt: 0.1 },
   },
   park: {
     /** inside once this fraction of the viewport into view, from the bottom or top edge */

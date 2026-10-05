@@ -85,6 +85,9 @@ export default function CardBinder({ children, perPage = 4 }: { children: ReactN
   // how the pages turn: "y" a book (rings left), "x" a calendar (rings on top); the CSS decides via --turn
   const [turn, setTurn] = useState<"x" | "y">("y");
   const pageRef = useRef(0);
+  const [hint, setHint] = useState(false);
+  // ends the hint early: the first turn (drag or arrows) means the visitor has found it
+  const hintOff = useRef(() => {});
   const items = Children.toArray(children);
   const pages = Array.from({ length: Math.ceil(items.length / perPage) }, (_, i) =>
     items.slice(i * perPage, (i + 1) * perPage),
@@ -137,6 +140,50 @@ export default function CardBinder({ children, perPage = 4 }: { children: ReactN
     return () => ro.disconnect();
   }, []);
 
+  // the hint, once per page load: the first time the open page's corner (the drag handle) is in view, the page lifts
+  // and settles (the same move as a drag) beside a "drag to flip" note
+  useEffect(() => {
+    const root = ref.current;
+    if (!root || !paged) return;
+    const H = motion.binder.hint;
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const timers: number[] = [];
+    let pg: HTMLElement | undefined;
+    const off = () => {
+      timers.forEach(clearTimeout);
+      if (pg) delete pg.dataset.hint;
+      setHint(false);
+      hintOff.current = () => {};
+    };
+    const corner = root.querySelectorAll(`.${s.page}`)[pageRef.current]?.querySelector(`.${s.corner}`);
+    if (!corner) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        io.disconnect();
+        timers.push(
+          window.setTimeout(() => {
+            hintOff.current = off;
+            setHint(true);
+            pg = root.querySelectorAll<HTMLElement>(`.${s.page}`)[pageRef.current];
+            if (pg && !still) pg.dataset.hint = "";
+            timers.push(
+              window.setTimeout(() => pg && delete pg.dataset.hint, H.peelMs * H.peels),
+              window.setTimeout(off, H.showFor),
+            );
+          }, H.delay),
+        );
+      },
+      // the whole corner, clear of the bottom of the screen (and the phone rail along it)
+      { rootMargin: `0px 0px -${H.enterAt * 100}% 0px`, threshold: 1 },
+    );
+    io.observe(corner);
+    return () => {
+      io.disconnect();
+      off();
+    };
+  }, [paged]);
+
   // Pages turn forward like a flip calendar; dragging past the last page brings the first back on top (a loop).
   // Depth (--d) runs from the open page, so the next page is always the one underneath. A turned page snaps flat again
   // at the bottom of the stack. Drag the open page's corner toward the rings to turn it (it follows the finger; past
@@ -170,6 +217,7 @@ export default function CardBinder({ children, perPage = 4 }: { children: ReactN
 
     // loop: the corner drag turns past the last page back to the first; the arrows stop at the ends
     function next(loop = false) {
+      hintOff.current();
       if (n < 2) return;
       if (busy) {
         if (!loop) queued++;
@@ -198,6 +246,7 @@ export default function CardBinder({ children, perPage = 4 }: { children: ReactN
       }, B.flip);
     }
     function prev() {
+      hintOff.current();
       if (n < 2) return;
       if (busy) {
         queued--;
@@ -231,6 +280,7 @@ export default function CardBinder({ children, perPage = 4 }: { children: ReactN
     const down = (e: PointerEvent) => {
       if (busy || !(e.target as Element).closest(`.${s.corner}`)) return;
       const pg = list()[pageRef.current];
+      hintOff.current(); // the lift animation would override the drag's inline transform
       e.preventDefault();
       el.setPointerCapture(e.pointerId);
       const size = book ? pg.offsetWidth : pg.offsetHeight;
@@ -270,6 +320,9 @@ export default function CardBinder({ children, perPage = 4 }: { children: ReactN
     "--pages": pages.length,
     "--flip-ms": `${B.flip}ms`,
     "--shine-ms": `${motion.holo.duration}ms`,
+    "--peel": motion.binder.hint.peel,
+    "--peel-ms": `${motion.binder.hint.peelMs}ms`,
+    "--peels": motion.binder.hint.peels,
   } as CSSProperties;
 
   return (
@@ -292,6 +345,13 @@ export default function CardBinder({ children, perPage = 4 }: { children: ReactN
               <Corner />
             </div>
           ))}
+          {/* decorative (generated content, hidden from screen readers): the arrows and the corner are the controls */}
+          <span
+            className={s.hint}
+            data-text={labels.binderHint[turn]}
+            data-show={hint ? "" : undefined}
+            aria-hidden="true"
+          />
         </div>
       </div>
       <div ref={navRef} className={s.pageNav}>

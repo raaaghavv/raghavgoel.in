@@ -347,7 +347,7 @@ export function startRide(els: RideElements): () => void {
     /* skater */
     if (dock) {
       const hs = small ? S.heroMobile : S.hero;
-      const Sh = clamp(w * hs.vw, hs.min, hs.max);
+      const Sh = clamp(Math.min(w * hs.vw, "vh" in hs ? h * hs.vh : Infinity), hs.min, hs.max);
       const d = dock.getBoundingClientRect();
       const groundY = d.top;
       let hx = d.left;
@@ -371,8 +371,9 @@ export function startRide(els: RideElements): () => void {
         }
         stiff = k < ph.pushEnd ? S.springs.push : S.springs.glide;
         const front = hx + Sh * I.revealLead;
-        letters.forEach((l) => {
-          if (l.dataset.on !== undefined) return;
+        // in reading order: each waits for the one before it (on phones GOEL hangs under RAGHAV, left of its end)
+        letters.forEach((l, i) => {
+          if (l.dataset.on !== undefined || (i > 0 && letters[i - 1].dataset.on === undefined)) return;
           const r = l.getBoundingClientRect();
           if (front > r.left + r.width * 0.25) flag(l, "on", true);
         });

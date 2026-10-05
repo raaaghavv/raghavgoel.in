@@ -261,7 +261,49 @@
   .intro {
     grid-template-columns: 1fr;
   }
+  /* the status pill wraps under the name line; keep it on the right */
+  .pill {
+    margin-left: auto;
+  }
+  /* sized to the screen like the rider (motion.skater.heroMobile), so a tall phone isn't left half empty;
+     GOEL hangs under the end of RAGHAV, clear of the rider, and the name keeps room below for it */
   .name {
-    font-size: 11vw;
+    font-size: min(15vw, 7.2svh);
+    padding-bottom: 0.55em;
+  }
+  .last {
+    left: auto;
+    right: 0;
+    top: calc(100% - 0.15em);
+    font-size: 0.42em;
+  }
+  /* the hero is a full screen tall and the content isn't, so the leftover height is shared: 3 parts sky above,
+     2 parts paper below, and the gaps and the subheading grow a little on taller screens. Every phone keeps the
+     same proportions instead of a tall one getting all the extra height as empty sky. */
+  .stage {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 16px;
+  }
+  .stage::before,
+  .stage::after {
+    content: "";
+    flex: 3 1 0;
+  }
+  .stage::after {
+    flex-grow: 2;
+  }
+  .tags {
+    margin-bottom: clamp(14px, 2.6svh, 30px);
+  }
+  .ground {
+    margin-top: clamp(12px, 2svh, 24px);
+  }
+  .intro {
+    margin-top: clamp(22px, 4.2svh, 48px);
+  }
+  .sub {
+    font-size: clamp(17px, 2.2svh, 21px);
   }
 }

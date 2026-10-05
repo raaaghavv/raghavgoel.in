@@ -51,7 +51,8 @@ export const motion = {
   skater: {
     /** px per scale unit in the hero: clamp(width * vw, min, max) */
     hero: { vw: 0.062, min: 42, max: 86 },
-    heroMobile: { vw: 0.09, min: 30, max: 40 },
+    /** phones: the smaller of width * vw and height * vh, so a tall phone gets a bigger rider and a short one fits */
+    heroMobile: { vw: 0.13, vh: 0.06, min: 30, max: 60 },
     rail: { desktop: 17, mobile: 14 },
     height: 3.75,
     springs: { push: 260, glide: 120, stance: 170, stunt: 200 },

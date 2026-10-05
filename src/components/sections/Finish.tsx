@@ -25,7 +25,13 @@ export default function Finish() {
       <Section id="contact" className={s.section} size="xl">
         <div className={`wrap ${s.headRow}`}>
           <p className={s.pitch}>{c.pitch}</p>
-          <p className={s.foot}>{site.footnote}</p>
+          <p className={s.foot}>
+            {site.footnote}
+            {/* the year of the build, so a redeploy keeps it current */}
+            <small className={s.copyright}>
+              © {new Date().getFullYear()} {site.name.full}
+            </small>
+          </p>
         </div>
 
         <div className={s.park}>

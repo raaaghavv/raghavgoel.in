@@ -570,3 +570,9 @@
     animation: none;
   }
 }
+
+/* the "Reach me" tag is acid already: select in pink */
+.tagHead::selection,
+.tagHead ::selection {
+  background: var(--pink);
+}

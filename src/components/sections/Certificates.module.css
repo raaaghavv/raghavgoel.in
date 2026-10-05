@@ -479,3 +479,7 @@
   }
 }
 
+/* yellow (backend) cards: an acid highlight wouldn't show, so select in pink */
+.card[data-type="be"] ::selection {
+  background: var(--pink);
+}

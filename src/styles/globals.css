@@ -155,3 +155,14 @@ html.lenis body {
     animation: none !important;
   }
 }
+
+/* selected text: an acid highlighter stroke, like the marked phrases in the hero. Text that already sits on acid
+   (the tape labels here; tags, badges and yellow cards in their modules) selects in pink instead. */
+::selection {
+  background: var(--acid);
+  color: var(--ink);
+}
+.tape::selection,
+.tape ::selection {
+  background: var(--pink);
+}

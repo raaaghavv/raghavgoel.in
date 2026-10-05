@@ -307,3 +307,19 @@
     font-size: clamp(17px, 2.2svh, 21px);
   }
 }
+
+/* already on acid (the middle tag, the highlighted phrases): select in pink */
+.tags li:nth-child(2)::selection,
+.sub b::selection {
+  background: var(--pink);
+}
+/* the giant name: the display face's tall line box would paint a selection band far past the letters, so the band is
+   transparent and the selected letters themselves turn acid on their pink shadow */
+.name ::selection {
+  background: transparent;
+  color: var(--acid);
+}
+/* the screen-reader copy of the name stays out of selections, so copying the name gives it once (NameCopy) */
+.srName {
+  user-select: none;
+}

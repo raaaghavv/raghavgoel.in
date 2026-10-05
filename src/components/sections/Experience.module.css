@@ -180,3 +180,8 @@
     height: 108px;
   }
 }
+
+/* the badge is acid already: select in pink */
+.where > .lvl::selection {
+  background: var(--pink);
+}

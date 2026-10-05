@@ -1,6 +1,7 @@
 import { site } from "@/config/site";
 import { checkpoints } from "@/config/sections";
 import { Rich } from "@/lib/text";
+import NameCopy from "./NameCopy";
 import s from "./Hero.module.css";
 
 /** Start line. The ride engine reads data-dock / data-reveal to choreograph the intro. */
@@ -35,7 +36,7 @@ export default function Hero() {
           ))}
         </ul>
         <h1 className={s.name} data-reveal-root="">
-          <span className="sr-only">{name.full}</span>
+          <span className={`sr-only ${s.srName}`}>{name.full}</span>
           <span className={s.first} aria-hidden="true">
             {[...name.first.toUpperCase()].map((c, i) => (
               <span key={i} className={s.ch} data-reveal="">
@@ -47,6 +48,7 @@ export default function Hero() {
             </span>
           </span>
         </h1>
+        <NameCopy />
         <div className={s.ground}>
           <div className={s.dock} data-dock="" />
         </div>

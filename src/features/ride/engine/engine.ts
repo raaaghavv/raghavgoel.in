@@ -247,10 +247,15 @@ export function startRide(els: RideElements): () => void {
       curI = rail.cps.indexOf(cur),
       lastI = rail.cps.length - 1;
     const bI = bannerIndex(y);
-    if (bI > lastBanner && dy > 0 && ts >= 0.99 && bI > 0 && bI < lastI) showBanner(bI);
+    // a jump (link, rail dot, key) greets only where it lands, not every checkpoint it passes
+    const jump = rail.state.jump;
+    if (jump && (Math.abs(y - jump.top) < 2 || now > jump.until)) rail.state.jump = null;
+    const dest = rail.state.jump ? bannerIndex(rail.state.jump.top) : -1;
+    if (bI > lastBanner && dy > 0 && ts >= 0.99 && bI > 0 && bI < lastI && (dest < 0 || bI === dest)) showBanner(bI);
     lastBanner = bI;
     if (hashReady && !rail.state.drag) writeHash(ts >= 0.99 || curI > 0 ? cur.id : rail.cps[0].id);
-    // course clear: on portrait screens at the finish's banner point (like the other banners), else at the very bottom
+    // course clear: on portrait screens at the finish's banner point (like the other banners), else on arriving at
+    // the finish anchor (100% on the rail: the last section's top, or the page bottom when that section is short)
     const C = motion.celebration,
       portrait = h > w;
     const atFinish = portrait ? bI === lastI : p >= C.triggerAt;

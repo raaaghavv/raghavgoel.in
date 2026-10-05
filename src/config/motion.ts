@@ -174,7 +174,10 @@ export const motion = {
     bannerFor: 2400,
     cheerFor: 1800,
     fireworksEvery: 260,
-    /** landscape: course clear fires at this progress (the very bottom) and re-arms below resetBelow */
+    /**
+     * landscape: course clear fires at this rail progress (1 = the finish anchor: the last section's top, or the
+     * page bottom when that section is shorter than the screen) and re-arms below resetBelow
+     */
     triggerAt: 0.995,
     resetBelow: 0.9,
     /**

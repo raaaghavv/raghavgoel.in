@@ -51,6 +51,7 @@ export function createStunt(ctx: RideContext, rail: Rail, hooks: { finishIntro: 
     lock(true);
     s.gliding = true;
     const target = clamp(top, 0, rail.geo.docMax);
+    rail.jumping(target, ms);
     const finish = () => {
       s.gliding = false;
       done();
@@ -94,8 +95,9 @@ export function createStunt(ctx: RideContext, rail: Rail, hooks: { finishIntro: 
       return;
     }
     const top = rail.cps[i].top;
-    if (s.mode === "hero" && !ctx.simple) goDown(top);
-    else if (ctx.lenis) ctx.lenis.scrollTo(top, { duration: 0.9 });
+    if (s.mode === "hero" && !ctx.simple) return goDown(top);
+    rail.jumping(top, 900);
+    if (ctx.lenis) ctx.lenis.scrollTo(top, { duration: 0.9 });
     else window.scrollTo({ top, behavior: ctx.reduce ? "instant" : "smooth" });
   }
   const atFirstSection = () => scrollY() <= firstSection() + 4;

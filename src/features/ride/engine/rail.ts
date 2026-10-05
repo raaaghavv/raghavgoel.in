@@ -25,9 +25,21 @@ export function createRail(ctx: RideContext) {
     };
   });
 
-  /** start/length: where the rail begins and how long it is along its axis; line: the rail's fixed other coordinate */
-  const geo = { flat: false, start: 0, length: 1, line: 0, docMax: 1 };
-  const state = { drag: null as null | { id: number; a0: number; p0: number }, used: false };
+  /**
+   * start/length: where the rail begins and how long it is along its axis; line: the rail's fixed other coordinate.
+   * docMax: the page's scroll range; end: the finish anchor's scroll position, where the rail reads 100%.
+   */
+  const geo = { flat: false, start: 0, length: 1, line: 0, docMax: 1, end: 1 };
+  const state = {
+    drag: null as null | { id: number; a0: number; p0: number },
+    used: false,
+    /** a jump in flight (a link, a rail dot, a key): only its destination's banner shows on the way */
+    jump: null as null | { top: number; until: number },
+  };
+  /** mark a programmatic glide to `top` (px) lasting about `ms` */
+  const jumping = (top: number, ms: number) => {
+    state.jump = { top: clamp(top, 0, geo.docMax), until: performance.now() + ms + 600 };
+  };
 
   function measure() {
     const r = els.rail.getBoundingClientRect();
@@ -39,13 +51,13 @@ export function createRail(ctx: RideContext) {
     els.thumb.setAttribute("aria-orientation", geo.flat ? "horizontal" : "vertical");
     // one anchor per checkpoint, at the exact section top: the rail dot, every navigation and "current" detection
     // all use it. The start line is the page top; later ones are capped at the page bottom (a short finish lands there).
-    cps.forEach((c, i) => {
-      c.top = i === 0 ? 0 : clamp(c.section.offsetTop, 0, geo.docMax);
-      c.p = c.top / geo.docMax;
-      // the finish flag is drawn at the end of the rail, so the rider reaches it at 100% even when the last
-      // section is taller than the screen (its anchor, for navigation and the hash, stays the section top)
-      const end = i === cps.length - 1;
-      c.li.style.setProperty("--at", (end ? geo.length : c.p * geo.length) + "px");
+    cps.forEach((c, i) => (c.top = i === 0 ? 0 : clamp(c.section.offsetTop, 0, geo.docMax)));
+    // the rail runs from the page top to the finish anchor, so arriving at the last section (by its link, its flag
+    // or scrolling) is 100% and the finish fires there; scrolling on through a tall last section stays at 100%
+    geo.end = Math.max(1, cps[cps.length - 1].top);
+    cps.forEach((c) => {
+      c.p = c.top / geo.end;
+      c.li.style.setProperty("--at", c.p * geo.length + "px");
     });
   }
 
@@ -56,17 +68,19 @@ export function createRail(ctx: RideContext) {
   };
   const axis = (e: PointerEvent) => (geo.flat ? e.clientX : e.clientY);
   const scrollY = () => ctx.lenis?.scroll ?? window.scrollY;
-  const progress = () => clamp(scrollY() / geo.docMax);
+  const progress = () => clamp(scrollY() / geo.end);
   const setP = (p: number) => {
-    const top = clamp(p) * geo.docMax;
+    const top = clamp(p) * geo.end;
     if (ctx.lenis) ctx.lenis.scrollTo(top, { immediate: true, force: true });
     else window.scrollTo({ top, behavior: "instant" });
   };
-  const goTo = (p: number) => {
-    const top = clamp(p) * geo.docMax;
+  /** glide to a scroll position (px) */
+  const glide = (top: number) => {
+    jumping(top, 900);
     if (ctx.lenis) ctx.lenis.scrollTo(top, { duration: 0.9 });
     else window.scrollTo({ top, behavior: ctx.reduce ? "instant" : "smooth" });
   };
+  const goTo = (p: number) => glide(clamp(p) * geo.end);
   const nearest = (p: number) => cps.reduce((a, c) => (Math.abs(c.p - p) < Math.abs(a.p - p) ? c : a), cps[0]);
   const current = (p: number) => {
     let cur = cps[0];
@@ -100,7 +114,7 @@ export function createRail(ctx: RideContext) {
   function onKey(e: KeyboardEvent) {
     const p = progress(),
       i = cps.indexOf(current(p));
-    const step = (window.innerHeight * motion.rail.keyStep) / geo.docMax;
+    const step = (window.innerHeight * motion.rail.keyStep) / geo.end;
     const prev = p - cps[i].p > 0.01 ? cps[i] : cps[Math.max(0, i - 1)];
     const k = (
       {
@@ -117,7 +131,9 @@ export function createRail(ctx: RideContext) {
     if (k === undefined) return;
     e.preventDefault();
     state.used = true;
-    goTo(k);
+    // End still means the page bottom, past the finish anchor
+    if (e.key === "End") glide(geo.docMax);
+    else goTo(k);
   }
 
   const off: (() => void)[] = [];
@@ -155,6 +171,7 @@ export function createRail(ctx: RideContext) {
     at,
     progress,
     goTo,
+    jumping,
     current,
     destroy: () => off.forEach((f) => f()),
   };

@@ -461,3 +461,15 @@
     display: none;
   }
 }
+
+/* phones: the rail is pinned to the bottom, and while the address bar slides in or out mid-scroll the browser moves
+   bottom-pinned layers itself, without telling JS. Pin the rider's layer and the effects canvas to the bottom too,
+   so all three move together; their height is the window's (--ride-h, set by the engine on resize), so at rest they
+   still start at the top of the screen and every coordinate is unchanged */
+@media (max-width: 700px) {
+  .fx,
+  .skater {
+    inset: auto 0 0;
+    height: var(--ride-h, 100%);
+  }
+}

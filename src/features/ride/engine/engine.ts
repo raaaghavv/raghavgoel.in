@@ -181,6 +181,8 @@ export function startRide(els: RideElements): () => void {
 
   /* ---------- resize ---------- */
   const onResize = () => {
+    // the rider layer and canvas are bottom-pinned on phones (RideLayer.module.css): keep them a window tall
+    for (const el of [els.skater, els.fxCanvas]) el.style.setProperty("--ride-h", `${window.innerHeight}px`);
     rail.measure();
     fx.resize();
     ctx.lenis?.resize();

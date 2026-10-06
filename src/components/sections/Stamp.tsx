@@ -42,7 +42,11 @@ export default function Stamp({ stamp }: { stamp: StampData }) {
     const hit = window.setTimeout(
       () => {
         if (el.dataset.stamped === undefined) return;
-        const { distance: d, rotate: r, duration } = S.thud;
+        const { distance: d, duration } = S.thud;
+        // a tilt swings the row's far corner by its height times the angle: on a phone a row is ~900px tall, so cap
+        // the tilt to move that corner no further than the nudge itself
+        const h = row?.offsetHeight ?? 0;
+        const r = Math.min(S.thud.rotate, h ? (d / h) * (180 / Math.PI) : S.thud.rotate);
         // damped wobble: each swing smaller and opposite to the last
         const swings = [-1, 0.75, -0.45, 0.25, -0.1];
         row?.animate(

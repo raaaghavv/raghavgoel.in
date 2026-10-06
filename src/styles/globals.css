@@ -21,6 +21,9 @@
 html {
   scrollbar-width: none;
   -webkit-text-size-adjust: 100%;
+  /* nothing may widen the page: phones re-fit the whole page to a momentary overflow (a stamp's row thud, a card
+     tilt), which jolts everything, the rail and rider included. clip, unlike hidden, makes no scroll container */
+  overflow-x: clip;
 }
 html::-webkit-scrollbar {
   display: none;

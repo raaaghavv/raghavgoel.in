@@ -2,6 +2,7 @@
 
 import type { PointerEvent } from "react";
 import type { Certificate } from "@/types/content";
+import { motion } from "@/config/motion";
 import { issuerLogos, type LogoArt } from "@/config/issuerLogos";
 
 /** an issuer's mark in its own colours: filled shapes, and lines for the parts drawn as outlines */
@@ -39,6 +40,17 @@ export default function Card({ cert: c, number }: { cert: Certificate; number: s
     el.style.setProperty("--rx", `${(0.5 - py) * 14}deg`);
     el.style.setProperty("--mx", `${px * 100}%`);
   };
+  // touch screens have no hover tilt: a touch replays the entry foil sweep on this card instead (it never blocks
+  // the scroll, the finger is free to keep swiping)
+  const onTouch = (e: PointerEvent<HTMLElement>) => {
+    if (e.pointerType === "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const el = e.currentTarget as HTMLElement & { _shine?: number };
+    clearTimeout(el._shine);
+    delete el.dataset.shine;
+    void el.offsetWidth; // restart the sweep if it's mid-play
+    el.dataset.shine = "";
+    el._shine = window.setTimeout(() => delete el.dataset.shine, motion.holo.duration);
+  };
   const onLeave = (e: PointerEvent<HTMLElement>) => {
     e.currentTarget.style.setProperty("--rx", "0deg");
     e.currentTarget.style.setProperty("--ry", "0deg");
@@ -48,6 +60,7 @@ export default function Card({ cert: c, number }: { cert: Certificate; number: s
       className={s.card}
       data-type={c.type}
       data-rare={c.rare ? "" : undefined}
+      onPointerDown={onTouch}
       onPointerMove={onMove}
       onPointerLeave={onLeave}
     >

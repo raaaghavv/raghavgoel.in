@@ -253,8 +253,11 @@
     )
     var(--mx, 50%) 50% / 250% 250%;
 }
-.card:hover::after {
-  opacity: 1;
+/* only where hover is real: a tap on a phone would otherwise leave the foil stuck on */
+@media (hover: hover) {
+  .card:hover::after {
+    opacity: 1;
+  }
 }
 /* entry wave (CardBinder): one foil sweep across the card */
 .card[data-shine]::after {

@@ -1,7 +1,7 @@
 import { experience } from "@/config/content/experience";
 import { labels } from "@/config/sections";
-import { Rich } from "@/lib/text";
 import Section from "./Section";
+import RunLogPoints from "./RunLogPoints";
 import Stamp from "./Stamp";
 import s from "./Experience.module.css";
 
@@ -40,13 +40,7 @@ export default function Experience() {
                   {e.badge && <span className={s.lvl}>{e.badge}</span>}
                 </td>
                 <td className={s.what}>
-                  <ul>
-                    {e.points.map((pt) => (
-                      <li key={pt}>
-                        <Rich text={pt} />
-                      </li>
-                    ))}
-                  </ul>
+                  <RunLogPoints points={e.points} />
                   {e.stamp && <Stamp stamp={e.stamp} />}
                 </td>
               </tr>

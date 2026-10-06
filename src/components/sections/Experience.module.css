@@ -185,3 +185,31 @@
 .where > .lvl::selection {
   background: var(--pink);
 }
+
+/* phones: long rows show their first bullets (labels.pointsShown) and a toggle for the rest (RunLogPoints) */
+.more {
+  display: none;
+}
+@media (max-width: 700px) {
+  .points:not([data-open]) > [data-extra] {
+    display: none;
+  }
+  .more {
+    display: inline-block;
+    align-self: flex-start;
+    margin-top: 2px;
+    padding: 7px 12px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    box-shadow: 3px 3px 0 var(--ink);
+    font: 600 11px/1 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .more:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--ink);
+  }
+}

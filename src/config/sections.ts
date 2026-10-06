@@ -60,6 +60,10 @@ export const labels = {
   binderPrev: "Previous page",
   binderNext: "Next page",
   binderPage: "Page",
+  /** run-log rows on phones: show the first few bullets, the rest behind a toggle */
+  pointsShown: 3,
+  morePoints: (n: number) => `+${n} more`,
+  fewerPoints: "Show less",
   /** the binder hint (once per page load), by turn axis: x = calendar (phones, drag up), y = book (tablets, drag left) */
   binderHint: { x: "drag to flip ↑", y: "drag to flip ←" },
 };

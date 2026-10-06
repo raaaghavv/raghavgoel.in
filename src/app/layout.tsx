@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import { Archivo, Bowlby_One, IBM_Plex_Mono, Permanent_Marker } from "next/font/google";
 import { site } from "@/config/site";
@@ -78,7 +79,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       {/* browser extensions (e.g. ColorZilla's cz-shortcut-listen) add attributes to <body> before hydration */}
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        {children}
+        {/* Vercel Web Analytics: cookieless page views; its script is served by Vercel, so it only runs there */}
+        <Analytics />
+      </body>
     </html>
   );
 }

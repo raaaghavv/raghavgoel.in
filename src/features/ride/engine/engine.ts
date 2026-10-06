@@ -284,6 +284,7 @@ export function startRide(els: RideElements): () => void {
     // the rider's spot on the rail. Desktop: wall ride down the right side, body sideways to the left of the line.
     // Phones (flat): grinding along the bottom, standing upright on the line.
     const flat = geo.flat;
+    if (flat) rail.track();
     const { x: railX, y: railY } = rail.at(pr);
 
     const Sr = small ? S.rail.mobile : S.rail.desktop;

@@ -61,6 +61,18 @@ export function createRail(ctx: RideContext) {
     });
   }
 
+  /**
+   * Re-read just the rail's own box. On phones the rail is pinned to the bottom of the screen, and the browser's
+   * address bar slides in and out as the scroll direction flips, moving it without a resize event; the engine calls
+   * this every frame there so the rider stays on the line.
+   */
+  function track() {
+    const r = els.rail.getBoundingClientRect();
+    geo.start = geo.flat ? r.left : r.top;
+    geo.length = Math.max(1, geo.flat ? r.width : r.height);
+    if (geo.flat) geo.line = r.top + r.height / 2;
+  }
+
   /** screen point on the rail at progress p */
   const at = (p: number) => {
     const a = geo.start + clamp(p) * geo.length;
@@ -168,6 +180,7 @@ export function createRail(ctx: RideContext) {
     geo,
     state,
     measure,
+    track,
     at,
     progress,
     goTo,

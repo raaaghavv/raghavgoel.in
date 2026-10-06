@@ -7,6 +7,13 @@ import { motion } from "@/config/motion";
 import { onScreen, useEnter } from "@/lib/useEnter";
 import s from "./Experience.module.css";
 
+/** when the most recently scheduled stamp presses, shared by every stamp on the page */
+let lastPress = 0;
+/** how far into view a stamp must be: less on narrow screens, where it sits under the row's text (stable, so the
+    observer isn't rebuilt every render) */
+const stampEnterAt = () =>
+  window.innerWidth < motion.stamps.narrowBelow ? motion.stamps.enterAtNarrow : motion.stamps.enterAt;
+
 /**
  * Rubber ink stamp: rim text, big value, small caption. Hidden (data-armed) until its row scrolls in, then pressed
  * onto the paper; it clears again once fully off screen so the next visit starts blank. Visible without JS
@@ -19,11 +26,15 @@ export default function Stamp({ stamp }: { stamp: StampData }) {
   const ring = stamp.ring.toUpperCase();
   const valueSize = Math.min(26, Math.floor(120 / Math.max(stamp.value.length, 3))); // fits inside the inner ring
 
-  useEnter(ref, motion.stamps.enterAt, (el) => {
+  const S = motion.stamps;
+  useEnter(ref, stampEnterAt, (el) => {
     if (el.dataset.stamped !== undefined) return; // already on the paper
-    const S = motion.stamps;
     const row = el.closest<HTMLTableRowElement>("tr");
-    const wait = S.delay + (row?.sectionRowIndex ?? 0) * S.stagger;
+    // stamps arriving together (wide screens) press one after another; one arriving alone presses right away
+    const now = performance.now();
+    const at = Math.max(now + S.delay, lastPress + S.stagger);
+    lastPress = at;
+    const wait = at - now;
     const press = window.setTimeout(() => {
       if (onScreen(el)) el.dataset.stamped = ""; // flung past it: stay blank and stamp on the next visit
     }, wait);

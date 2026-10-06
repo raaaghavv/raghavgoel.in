@@ -13,12 +13,13 @@ import { useEffect, type RefObject } from "react";
  */
 export function useEnter<T extends Element>(
   ref: RefObject<T | null>,
-  enterAt: number,
+  enterAt: number | (() => number),
   onEnter: (el: T, dir: 1 | -1) => void | (() => void),
 ) {
   useEffect(() => {
     const el = ref.current;
     if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const at = typeof enterAt === "function" ? enterAt() : enterAt;
     let inside = false;
     let cleanup: void | (() => void);
     const io = new IntersectionObserver(
@@ -31,7 +32,7 @@ export function useEnter<T extends Element>(
         }
         inside = entry.isIntersecting;
       },
-      { rootMargin: `-${enterAt * 100}% 0px -${enterAt * 100}% 0px` },
+      { rootMargin: `-${at * 100}% 0px -${at * 100}% 0px` },
     );
     io.observe(el);
     return () => {

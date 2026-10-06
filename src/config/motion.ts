@@ -132,8 +132,11 @@ export const motion = {
   stamps: {
     /** inside once this fraction of the viewport into view, from the bottom or top edge */
     enterAt: 0.25,
+    /** narrow screens (single-column rows, the stamp under the text): pressed as soon as it's clearly on screen */
+    enterAtNarrow: 0.08,
+    narrowBelow: 860,
     delay: 150,
-    /** extra delay per run-log row, so rows arriving together are stamped one after another */
+    /** stamps arriving together are pressed one after another, this far apart; one arriving alone isn't held back */
     stagger: 220,
     /** incoming-stamp animation length, ms (passed to CSS as --stamp-ms) */
     duration: 650,

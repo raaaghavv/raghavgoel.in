@@ -75,7 +75,7 @@ export const projects: Project[] = [
     built: "An SSE server broadcasting to every client, and a useSSE hook that reconnects by itself.",
     result: { value: "Zero refreshes", unit: "Logs push live and reconnect on their own" },
     stack: ["Express", "SSE", "React"],
-    live: "https://api-watch-kappa.vercel.app",
+    live: "https://api-log-watch.vercel.app",
     repo: gh("API-Watch"),
   },
 ];
